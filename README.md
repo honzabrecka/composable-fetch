@@ -1,4 +1,4 @@
-# transmit
+# composable-fetch
 
 A library that brings composition to fetch requests
 
@@ -26,7 +26,7 @@ To consume JSON APIs:
 ```js
 const log = console.log.bind(console)
 
-const fetchJSON = transmit([
+const fetchJSON = fetch([
   requestMiddlewares.withBaseUrl('https://example.com/api'),
   requestMiddlewares.withHeader('Content-Type', 'application/json'),
   requestMiddlewares.withHeader('Accept', 'application/json'),
@@ -52,7 +52,7 @@ const reader = transit.reader()
 const decodeTransit = (req, res, next) =>
   next(Object.assign(res, { body: reader.read(res.body) }))
 
-const fetchTransit = transmit([
+const fetchTransit = fetch([
   requestMiddlewares.withBaseUrl('https://example.com/api'),
   requestMiddlewares.withHeader('Content-Type', 'application/json'),
   requestMiddlewares.withHeader('Accept', 'application/json'),
@@ -78,7 +78,7 @@ const tap = (f) => (v) => {
   return v
 }
 
-const fetch = transmit([tap(log)])()
+const fetch = fetch([tap(log)])()
 ```
 
 ## Retries

@@ -98,12 +98,12 @@ const responseMiddlewares = {
 
 }
 
-const transmit = (requestMiddlewares = []) => (responseMiddlewares = []) => (req) => {
+const composableFetch = (requestMiddlewares = []) => (responseMiddlewares = []) => (req) => {
   const reqM = pipe.apply(null, requestMiddlewares)(req)
 
   return fetch(reqM.url, reqM).then((res) => new Promise((resolve, reject) => {
 
-    const transmitError = (e, req, res) => {
+    const error = (e, req, res) => {
       const err = new Error(e.message)
       err.original = e
       err.req = req
@@ -114,10 +114,10 @@ const transmit = (requestMiddlewares = []) => (responseMiddlewares = []) => (req
     const next = ([head, ...tail], req, res) => {
       if (!head) return res
       head(req, res, (...args) => {
-        if (args.length === 1 && args[0] instanceof Error) reject(transmitError(args[0], req, res))
+        if (args.length === 1 && args[0] instanceof Error) reject(error(args[0], req, res))
         else if (args.length === 1) next(tail, req, args[0])
         else if (args.length === 2) next([head].concat(tail), args[0], args[1])
-        else reject(transmitError(new Error('next function called with wrong arity')))
+        else reject(error(new Error('next function called with wrong arity')))
       })
     }
 
@@ -126,11 +126,10 @@ const transmit = (requestMiddlewares = []) => (responseMiddlewares = []) => (req
 }
 
 module.exports = {
-  fetch,
   pipe,
   delay,
   delays,
   requestMiddlewares,
   responseMiddlewares,
-  transmit,
+  fetch: composableFetch,
 }
