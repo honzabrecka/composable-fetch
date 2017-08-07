@@ -79,6 +79,11 @@ const responseMiddlewares = {
     next(res)
   },
 
+  tap: (f) => (req, res, next) => {
+    f(req, res)
+    next(res)
+  }
+
 }
 
 const transmit = (requestMiddlewares = []) => (responseMiddlewares = []) => (req) => {
