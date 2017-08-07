@@ -30,6 +30,18 @@ const delays = {
 
 const responseMiddlewares = {
 
+  withSafe204: (text = '', json = {}) => (req, res, next) => {
+    if (res.status === 204) {
+      next(Object.assign(res, {
+        text: () => Promise.resolve(text),
+        json: () => Promise.resolve(json)
+      }))
+      return
+    }
+
+    next(res)
+  },
+
   decodeResponse: async (req, res, next) => {
     try {
       const body = await res[(res.headers.get('content-type') || '').indexOf('application/json') === 0 ? 'json' : 'text']()
@@ -65,7 +77,7 @@ const responseMiddlewares = {
   },
 
   withRetry: (max = 5, delay = delays.linear()) => (req, res, next) => {
-    if (res.status >= 200) {
+    if (res.status >= 500) {
       if (!req.retry || req.retry < max) {
         const retry = (req.retry || 0) + 1
         delay(retry).then(() => next(Object.assign(req, { retry }), res))
