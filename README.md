@@ -33,6 +33,7 @@ const fetchJSON = transmit([
   requestMiddlewares.withEncodedBody(JSON.stringify),
 ])([
   responseMiddlewares.withRetry(),
+  responseMiddlewares.withSafe204(),
   responseMiddlewares.decodeJSONResponse,
   responseMiddlewares.checkStatus,
 ])
@@ -58,6 +59,7 @@ const fetchTransit = transmit([
   requestMiddlewares.withEncodedBody(writer.write),
 ])([
   responseMiddlewares.withRetry(),
+  responseMiddlewares.withSafe204(),
   responseMiddlewares.decodeTextResponse,
   responseMiddlewares.checkStatus,
   decodeTransit,
