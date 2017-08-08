@@ -69,6 +69,18 @@ const decodeResponse = async (res) => {
   return res
 }
 
+const decodeTextResponse = async (res) => {
+  const body = await res.text()
+  res.body = body
+  return res
+}
+
+const decodeJSONResponse = async (res) => {
+  const body = await res.json()
+  res.body = body
+  return res
+}
+
 const checkStatus = (res) => {
   if (res.status < 200 || res.status >= 400)
     throw new Error('Invalid status code.')
@@ -103,6 +115,8 @@ module.exports = {
     withEncodedBody,
     withSafe204,
     decodeResponse,
+    decodeTextResponse,
+    decodeJSONResponse,
     checkStatus,
     withTimeout,
     withRetry,
