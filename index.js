@@ -7,7 +7,6 @@ const isPromise = (v) => !!v
 const pipeP = (...fns) => (value) => {
   return new Promise((resolve, reject) => {
     const run = ([f, ...fns]) => (value) => {
-      console.log('pipeK:', f, value)
       if (!f) resolve(value)
       else {
 
