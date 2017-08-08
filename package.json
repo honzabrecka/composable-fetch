@@ -1,5 +1,17 @@
 {
+  "name": "composable-fetch",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:honzabrecka/composable-fetch.git"
+  },
+  "author": "jan.brecka@gmail.com",
+  "license": "MIT",
   "dependencies": {
     "isomorphic-fetch": "^2.2.1"
+  },
+  "devDependencies": {
+    "transit-js": "^0.8.846"
   }
 }
