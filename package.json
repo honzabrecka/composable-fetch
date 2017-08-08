@@ -12,6 +12,7 @@
     "isomorphic-fetch": "^2.2.1"
   },
   "devDependencies": {
+    "serial-fetch": "^1.0.0",
     "transit-js": "^0.8.846"
   }
 }
