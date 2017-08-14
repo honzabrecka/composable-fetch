@@ -1,4 +1,5 @@
 const { composableFetch, pipeP } = require('../index')
+const fetch = require('isomorphic-fetch')
 const transit = require('transit-js')
 const log = console.log.bind(console)
 const writer = transit.writer('json')
@@ -14,7 +15,7 @@ const fetchJSON = pipeP(
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody((v) => writer.write(v)),
-  composableFetch.retryableFetch,
+  composableFetch.retryable(fetch),
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),

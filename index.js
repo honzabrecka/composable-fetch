@@ -1,5 +1,3 @@
-const $fetch = require('isomorphic-fetch')
-
 const isPromise = (v) => !!v
   && (typeof v === 'object' || typeof v === 'function')
   && typeof v.then === 'function'
@@ -9,7 +7,6 @@ const pipeP = (...fns) => (value) => {
     const run = ([f, ...fns]) => (value) => {
       if (!f) resolve(value)
       else {
-
         value = f(value)
         if (isPromise(value)) value.then(run(fns)).catch(reject)
         else run(fns)(value)
@@ -33,9 +30,7 @@ const delays = {
   exponential: (time = 1000) => (i) => delay(i * i * time)
 }
 
-const fetch = (req) => $fetch(req.url, req)
-
-const retryableFetch = (req) => () => fetch(req)
+const retryable = (fetch) => (req) => () => fetch(req.url, req)
 
 const withBaseUrl = (baseUrl) => (req) => {
   req.url = baseUrl + req.url
@@ -107,8 +102,7 @@ module.exports = {
   delay,
   delays,
   composableFetch: {
-    fetch,
-    retryableFetch,
+    retryable,
     withBaseUrl,
     withHeader,
     withEncodedBody,

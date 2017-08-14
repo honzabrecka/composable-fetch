@@ -1,4 +1,5 @@
 const { composableFetch, pipeP } = require('../index')
+const fetch = require('isomorphic-fetch')
 const log = console.log.bind(console)
 
 const fetchJSON = pipeP(
@@ -6,7 +7,7 @@ const fetchJSON = pipeP(
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody(JSON.stringify),
-  composableFetch.retryableFetch,
+  composableFetch.retryable(fetch),
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),

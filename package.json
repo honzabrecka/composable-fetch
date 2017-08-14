@@ -8,10 +8,8 @@
   },
   "author": "jan.brecka@gmail.com",
   "license": "MIT",
-  "dependencies": {
-    "isomorphic-fetch": "^2.2.1"
-  },
   "devDependencies": {
+    "isomorphic-fetch": "^2.2.1",
     "serial-fetch": "^1.0.0",
     "transit-js": "^0.8.846"
   }

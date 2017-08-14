@@ -1,11 +1,12 @@
 const { composableFetch, pipeP } = require('../index')
+const fetch = require('isomorphic-fetch')
 const log = console.log.bind(console)
 
 // this will run request one by one
 // for more info check https://github.com/honzabrecka/serial-fetch
 const $serialFetch = require('serial-fetch').default
-const serialFetch = $serialFetch(composableFetch.fetch)
-const retryableSerialFetch = (req) => () => serialFetch(req)
+const serialFetch = $serialFetch(fetch)
+const retryableSerialFetch = (req) => () => serialFetch(req.url, req)
 
 const fetchJSON = pipeP(
   composableFetch.withBaseUrl('https://honzabrecka.com/api'),
