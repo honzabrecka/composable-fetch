@@ -50,7 +50,7 @@ fetchJSON({ url: '/foo' }).then(log).catch(log)
 
 ## Retries
 
-When using `composableFetch.withRetry`, make sure you're using `composableFetch.retryableFetch` instead of `composableFetch.fetch`.
+When using `composableFetch.withRetry`, make sure that `fetch` is wrapped with `composableFetch.retryable`.
 
 ```js
 const { composableFetch, delays } = require('composable-fetch')
