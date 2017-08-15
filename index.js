@@ -32,7 +32,7 @@ const delays = {
 
 const fetch1 = (fetch) => (req) => fetch(req.url, req)
 
-const retryable = (fetch) => (req) => () => fetch(req.url, req)
+const retryable = (fetch1) => (req) => () => fetch1(req)
 
 const withBaseUrl = (baseUrl) => (req) => {
   req.url = baseUrl + req.url
