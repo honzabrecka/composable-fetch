@@ -1,7 +1,8 @@
 {
   "name": "composable-fetch",
   "version": "1.1.0",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git@github.com:honzabrecka/composable-fetch.git"
@@ -11,6 +12,7 @@
   "devDependencies": {
     "isomorphic-fetch": "^2.2.1",
     "serial-fetch": "^1.0.0",
-    "transit-js": "^0.8.846"
+    "transit-js": "^0.8.846",
+    "typescript": "^2.4.2"
   }
 }
