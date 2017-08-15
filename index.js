@@ -30,6 +30,8 @@ const delays = {
   exponential: (time = 1000) => (i) => delay(i * i * time)
 }
 
+const fetch1 = (fetch) => (req) => fetch(req.url, req)
+
 const retryable = (fetch) => (req) => () => fetch(req.url, req)
 
 const withBaseUrl = (baseUrl) => (req) => {
@@ -102,6 +104,7 @@ module.exports = {
   delay,
   delays,
   composableFetch: {
+    fetch1,
     retryable,
     withBaseUrl,
     withHeader,
