@@ -83,7 +83,7 @@ If you're dealing with a legacy API which may or may not successfully respond, t
 ```js
 const fetchJSON = pipeP(
   // ...
-  composableFetch.retryable(pipe(
+  composableFetch.retryable(pipeP(
     composableFetch.fetch1(fetch),
     composableFetch.checkStatus// when this check fails => do retry
   )),
