@@ -88,12 +88,12 @@ const withTimeout = (timeout) => (retryableFetch) => {
 const withRetry = (max = 5, delay = delays.linear()) => (retryableFetch) => {
   return new Promise((resolve, reject) => {
     const run = (t) => {
-      if (t === max) return reject(new Error('Retry failed'))
+      if (t === max + 1) return reject(new Error('Retry failed'))
       retryableFetch().then(resolve).catch((e) => {
         delay(t).then(() => run(t + 1))
       })
     }
-    run(0)
+    run(1)
   })
 }
 
