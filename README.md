@@ -8,7 +8,7 @@ A library that brings composition to fetch requests.
 npm install composable-fetch
 ```
 
-## Examples
+## Example
 
 To consume JSON APIs:
 
