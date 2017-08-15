@@ -15,13 +15,15 @@ const fetchJSON = pipeP(
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody((v) => writer.write(v)),
-  composableFetch.retryable(fetch),
+  composableFetch.retryable(pipeP(
+    fetch,
+    composableFetch.checkStatus
+  )),
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
   composableFetch.decodeTextResponse,
   decodeTransit,
-  composableFetch.checkStatus,
 )
 
 fetchJSON({ url: '/', method: 'post', body: ['foo', 'bar'] }).then(log).catch(log)

@@ -37,12 +37,14 @@ const fetchJSON = pipeP(
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody(JSON.stringify),
-  composableFetch.retryable(fetch),
+  composableFetch.retryable(pipeK(
+    fetch,
+    composableFetch.checkStatus
+  )),
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
-  composableFetch.decodeResponse,
-  composableFetch.checkStatus,
+  composableFetch.decodeResponse
 )
 
 fetchJSON({ url: '/foo' }).then(log).catch(log)
