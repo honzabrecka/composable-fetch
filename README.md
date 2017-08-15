@@ -67,6 +67,7 @@ composableFetch.withRetry(3, delays.exponential())
 // retries after 1 sec, then after 4 secs, then after 9 secs
 
 // custom
-const customDelay = (time = 1000) => (i) => delay(((i % 3) + 1) * time),
+const customDelay = (time = 1000) => (i) => delay((((i - 1) % 3) + 1) * time),
 composableFetch.withRetry(15, customDelay())
+// retries after 1 sec, then 2 secs, 3 secs, then 1 sec, 2 secs, 3 secs, ...
 ```
