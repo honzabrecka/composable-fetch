@@ -8,21 +8,6 @@ A library that brings composition to fetch requests.
 npm install composable-fetch
 ```
 
-## pipeP
-
-Performs left-to-right function composition. Each function in composition must be unary. If function returns promise, than `pipeP` wait to its resolution before it calls next function in chain.
-
-## Request format
-
-```js
-const req = {
-  url: string,
-  method?: string,
-  headers?: object,
-  body?: any,
-}
-```
-
 ## Examples
 
 To consume JSON APIs:
@@ -48,6 +33,21 @@ const fetchJSON = pipeP(
 )
 
 fetchJSON({ url: '/foo' }).then(log).catch(log)
+
+```
+## pipeP
+
+Performs left-to-right function composition. Each function in composition must be unary. If function returns promise, than `pipeP` waits to its resolution before it calls next function in chain.
+
+## Request interface
+
+```js
+const req = {
+  url: string,
+  method?: string,
+  headers?: object,
+  body?: any,
+}
 ```
 
 ## Retries
@@ -55,7 +55,7 @@ fetchJSON({ url: '/foo' }).then(log).catch(log)
 When using `composableFetch.withRetry`, make sure that `fetch` is wrapped with `composableFetch.retryable`.
 
 ```js
-const { composableFetch, delays } = require('composable-fetch')
+const { composableFetch, delays, delay } = require('composable-fetch')
 
 composableFetch.withRetry(3, delays.constant())
 // retries after 1 sec, then again after 1 sec, then again after 1 sec
