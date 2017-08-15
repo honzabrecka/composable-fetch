@@ -10,7 +10,7 @@ const decodeTransit = (res) => {
   return res
 }
 
-const fetchJSON = pipeP(
+const fetchTransit = pipeP(
   composableFetch.withBaseUrl('https://echo-http-server.herokuapp.com'),
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
@@ -24,4 +24,4 @@ const fetchJSON = pipeP(
   composableFetch.checkStatus
 )
 
-fetchJSON({ url: '/', method: 'post', body: ['foo', 'bar'] }).then(log).catch(log)
+fetchTransit({ url: '/', method: 'post', body: ['foo', 'bar'] }).then(log).catch(log)
