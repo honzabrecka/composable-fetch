@@ -4,15 +4,20 @@ const isPromise = (v: any) => !!v
 
 const pipeP = (...fns: Function[]) => (value: any) => {
   return new Promise((resolve, reject) => {
-    const run = ([f, ...fns]) => (value: any) => {
-      if (!f) resolve(value)
+    const run = ([f, ...fns], value: any) => {
+      if (!f)
+        resolve(value)
       else {
         value = f(value)
-        if (isPromise(value)) value.then(run(fns)).catch(reject)
-        else run(fns)(value)
+        if (isPromise(value))
+          value
+            .then((value: any) => run(fns, value))
+            .catch(reject)
+        else
+          run(fns, value)
       }
     }
-    run(fns)(value)
+    run(fns, value)
   })
 }
 
@@ -72,21 +77,20 @@ const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
   return res
 }
 
-const decodeResponse = async (res: Response) => {
-  const data = await res[(res.headers.get('content-type') || '').indexOf('application/json') === 0 ? 'json' : 'text']();
-  (res as any).data = data
-  return res
+const decodeResponse = (res: Response) => {
+  const contentType = (res.headers.get('content-type') || '')
+  return contentType.indexOf('application/json') === 0
+    ? decodeJSONResponse(res)
+    : decodeTextResponse(res)
 }
 
 const decodeTextResponse = async (res: Response) => {
-  const data = await res.text();
-  (res as any).data = data
+  (res as any).data =  await res.text()
   return res
 }
 
 const decodeJSONResponse = async (res: Response) => {
-  const data = await res.json();
-  (res as any).data = data
+  (res as any).data = await res.json()
   return res
 }
 
@@ -104,11 +108,13 @@ const withTimeout = (timeout: number) => (retryableFetch: Retryable<Promise<Resp
 
 const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (retryableFetch: Retryable<Promise<Response>>): Promise<Response> => {
   return new Promise((resolve, reject) => {
-    const run = (t: number) => {
-      if (t === max + 1) return reject(new Error('Retry failed'))
-      retryableFetch().then(resolve).catch((e: any) => {
-        delay(t).then(() => run(t + 1))
-      })
+    const run = (i: number) => {
+      if (i === max + 1)
+        reject(new Error('Retry failed'))
+      else
+        retryableFetch()
+          .then(resolve)
+          .catch((_) => delay(i).then(() => run(i + 1)))
     }
     run(1)
   })
