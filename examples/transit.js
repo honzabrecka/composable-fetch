@@ -6,7 +6,7 @@ const writer = transit.writer('json')
 const reader = transit.reader('json')
 
 const decodeTransit = (res) => {
-  res.body = reader.read(res.body)
+  res.data = reader.read(res.data)
   return res
 }
 
