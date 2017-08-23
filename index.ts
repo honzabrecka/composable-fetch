@@ -73,20 +73,20 @@ const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
 }
 
 const decodeResponse = async (res: Response) => {
-  const body = await res[(res.headers.get('content-type') || '').indexOf('application/json') === 0 ? 'json' : 'text']();
-  (res as any).body = body
+  const data = await res[(res.headers.get('content-type') || '').indexOf('application/json') === 0 ? 'json' : 'text']();
+  (res as any).data = data
   return res
 }
 
 const decodeTextResponse = async (res: Response) => {
-  const body = await res.text();
-  (res as any).body = body
+  const data = await res.text();
+  (res as any).data = data
   return res
 }
 
 const decodeJSONResponse = async (res: Response) => {
-  const body = await res.json();
-  (res as any).body = body
+  const data = await res.json();
+  (res as any).data = data
   return res
 }
 
