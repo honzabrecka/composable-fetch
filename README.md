@@ -1,4 +1,4 @@
-# composable-fetch
+# composable-fetch [![CircleCI](https://circleci.com/gh/honzabrecka/composable-fetch/tree/master.svg?style=svg&circle-token=eefe6811545741764260a25f382c13da0d6e31a7)](https://circleci.com/gh/honzabrecka/composable-fetch/tree/master)
 
 A library that brings composition to fetch requests.
 
