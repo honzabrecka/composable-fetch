@@ -85,7 +85,7 @@ const decodeResponse = (res: Response) => {
 }
 
 const decodeTextResponse = async (res: Response) => {
-  (res as any).data =  await res.text()
+  (res as any).data = await res.text()
   return res
 }
 
