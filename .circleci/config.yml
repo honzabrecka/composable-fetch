@@ -14,4 +14,5 @@ jobs:
           paths:
             - ./node_modules
       - run: npm run tslint
+      - run: npm run jest
       - run: npm run tsc
