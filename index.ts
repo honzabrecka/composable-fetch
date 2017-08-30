@@ -119,7 +119,7 @@ const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: R
   })
 }
 
-const constructResponseError = (message: string, res: Response) => {
+const errorWithAttachedResponse = (message: string, res: Response) => {
   const e = new Error(message);
   (e as any).res = res
   return e
@@ -149,7 +149,7 @@ const decodeJSONResponse = async (res: Response) => {
   try {
     (res as any).data = await res.json()
   } catch (e) {
-    throw constructResponseError(e.message, res)
+    throw errorWithAttachedResponse(e.message, res)
   }
 
   return res
@@ -157,7 +157,7 @@ const decodeJSONResponse = async (res: Response) => {
 
 const checkStatus = (res: Response) => {
   if (res.status < 200 || res.status >= 400)
-    throw constructResponseError('Invalid status code', res)
+    throw errorWithAttachedResponse('Invalid status code', res)
   return res
 }
 
