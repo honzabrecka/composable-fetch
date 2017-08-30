@@ -70,6 +70,10 @@ export interface Request extends RequestInit {
   url: string
 }
 
+export interface ResponseT extends Response {
+  data?: any
+}
+
 const withBaseUrl = (baseUrl: string) => (req: Request) => {
   req.url = baseUrl + req.url
   return req
@@ -130,17 +134,17 @@ const checkStatus = (res: Response) => {
   return res
 }
 
-const withTimeout = (timeout: number) => (retryableFetch: RetryableFetch): RetryableFetch => {
-  return () => Promise.race([retryableFetch(), delayedFail(timeout)])
+const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch => {
+  return () => Promise.race([fetch(), delayedFail(timeout)])
 }
 
-const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (retryableFetch: RetryableFetch): Promise<Response> => {
+const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
   return new Promise((resolve, reject) => {
     const run = (i: number) => {
       if (i === max + 1)
         reject(new Error('Retry failed'))
       else
-        retryableFetch()
+        fetch()
           .then(resolve)
           .catch((_) => delay(i).then(() => run(i + 1)))
     }
