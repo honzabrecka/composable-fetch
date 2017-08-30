@@ -1,15 +1,15 @@
 import { composableFetch, delays } from '../index'
 
 const tries = [
-  Promise.reject('no'),
-  Promise.reject('no'),
-  Promise.reject('no'),
-  Promise.resolve('yes'),
+  () => Promise.reject('no'),
+  () => Promise.reject('no'),
+  () => Promise.reject('no'),
+  () => Promise.resolve('yes'),
 ]
 
 function retryableF() {
   let i = 0
-  return () => tries[i++]
+  return () => tries[i++]()
 }
 
 describe('withRetry', () => {
