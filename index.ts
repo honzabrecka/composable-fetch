@@ -65,12 +65,6 @@ export const delays = {
   linear: (time: number = 1000): Delay => (i: number) => delay(i * time),
 }
 
-const constructResponseError = (message: string, res: Response) => {
-  const e = new Error(message);
-  (e as any).res = res
-  return e
-}
-
 export interface Request extends RequestInit {
   url: string
 }
@@ -108,6 +102,29 @@ export type RetryableFetch = () => Promise<Response>
 
 const retryable = (fetch: UnaryFetch) => (req: Request): RetryableFetch => () => fetch(req)
 
+const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch => {
+  return () => Promise.race([fetch(), delayedFail(timeout)])
+}
+
+const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
+  return new Promise((resolve, reject) => {
+    (function run(i: number) {
+      if (i === max + 1)
+        reject(new Error('Retry failed'))
+      else
+        fetch()
+          .then(resolve)
+          .catch((_) => delay(i).then(() => run(i + 1)))
+    })(1)
+  })
+}
+
+const constructResponseError = (message: string, res: Response) => {
+  const e = new Error(message);
+  (e as any).res = res
+  return e
+}
+
 const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
   if (res.status === 204) {
     res.text = () => Promise.resolve(text)
@@ -142,23 +159,6 @@ const checkStatus = (res: Response) => {
   if (res.status < 200 || res.status >= 400)
     throw constructResponseError('Invalid status code', res)
   return res
-}
-
-const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch => {
-  return () => Promise.race([fetch(), delayedFail(timeout)])
-}
-
-const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
-  return new Promise((resolve, reject) => {
-    (function run(i: number) {
-      if (i === max + 1)
-        reject(new Error('Retry failed'))
-      else
-        fetch()
-          .then(resolve)
-          .catch((_) => delay(i).then(() => run(i + 1)))
-    })(1)
-  })
 }
 
 export const composableFetch = {
