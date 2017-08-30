@@ -102,9 +102,8 @@ export type RetryableFetch = () => Promise<Response>
 
 const retryable = (fetch: UnaryFetch) => (req: Request): RetryableFetch => () => fetch(req)
 
-const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch => {
-  return () => Promise.race([fetch(), delayedFail(timeout)])
-}
+const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch => () =>
+  Promise.race([fetch(), delayedFail(timeout)])
 
 const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
   return new Promise((resolve, reject) => {
