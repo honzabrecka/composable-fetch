@@ -70,10 +70,6 @@ export interface Request extends RequestInit {
   url: string
 }
 
-export interface ResponseT extends Response {
-  data?: any
-}
-
 const withBaseUrl = (baseUrl: string) => (req: Request) => {
   req.url = baseUrl + req.url
   return req
@@ -85,7 +81,7 @@ const withHeader = (header: string, value: string) => (req: Request) => {
   return req
 }
 
-export type Encoder<A, B>  = (v: A) => B
+export type Encoder<A, B> = (v: A) => B
 
 const withEncodedBody = <A, B>(encoder: Encoder<A, B>) => (req: Request) => {
   if ((req.method && req.method.toLowerCase() !== 'get') && req.body)
@@ -120,9 +116,9 @@ const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: R
 }
 
 const errorWithAttachedResponse = (message: string, res: Response) => {
-  const e = new Error(message);
-  (e as any).res = res
-  return e
+  const error = new Error(message);
+  (error as any).res = res
+  return error
 }
 
 const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {

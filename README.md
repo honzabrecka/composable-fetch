@@ -42,7 +42,7 @@ Performs left-to-right function composition. Each function in composition must b
 As noted above, `pipeP` expects unary functions. But because the `window.fetch` function is binary, it's necessary to wrap it with an unary lambda:
 
 ```js
-const $fetch = (req) => window.fetch(req.url, req)
+const fetch1 = (req) => window.fetch(req.url, req)
 
 // where req has the following interface:
 const req = {
