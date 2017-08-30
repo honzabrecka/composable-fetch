@@ -62,6 +62,7 @@ export type Delay = (i: number) => Promise<void>
 export const delays = {
   constant: (time: number = 1000): Delay => (i: number) => delay(time),
   exponential: (time: number = 1000): Delay => (i: number) => delay(i * i * time),
+  limited: (max: number, delay: Delay) => (i: number) => delay(((i - 1) % max) + 1),
   linear: (time: number = 1000): Delay => (i: number) => delay(i * time),
 }
 
