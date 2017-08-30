@@ -65,6 +65,12 @@ export const delays = {
   linear: (time: number = 1000): Delay => (i: number) => delay(i * time),
 }
 
+const constructResponseError = (message: string, res: Response) => {
+  const e = new Error(message);
+  (e as any).res = res
+  return e
+}
+
 export interface Request extends RequestInit {
   url: string
 }
@@ -123,13 +129,18 @@ const decodeTextResponse = async (res: Response) => {
 }
 
 const decodeJSONResponse = async (res: Response) => {
-  (res as any).data = await res.json()
+  try {
+    (res as any).data = await res.json()
+  } catch (e) {
+    throw constructResponseError(e.message, res)
+  }
+
   return res
 }
 
 const checkStatus = (res: Response) => {
   if (res.status < 200 || res.status >= 400)
-    throw new Error('Invalid status code.')
+    throw constructResponseError('Invalid status code', res)
   return res
 }
 
