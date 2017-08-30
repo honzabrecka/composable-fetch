@@ -7,22 +7,24 @@ describe('checkStatus', () => {
   })
 
   it('fails for res.status < 200', async () => {
+    const res = { status: 100 }
     try {
-      const res = { status: 100 }
       composableFetch.checkStatus(res as any)
       fail()
     } catch (e) {
       expect(e).toBeInstanceOf(Error)
+      expect(e.res).toBe(res)
     }
   })
 
   it('fails for res.status >= 400', async () => {
+    const res = { status: 400 }
     try {
-      const res = { status: 400 }
       composableFetch.checkStatus(res as any)
       fail()
     } catch (e) {
       expect(e).toBeInstanceOf(Error)
+      expect(e.res).toBe(res)
     }
   })
 })
