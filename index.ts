@@ -66,11 +66,8 @@ const delays = {
   linear: (time: number = 1000): Delay => (i: number) => delay(i * time),
 }
 
-export interface Request {
+export interface Request extends RequestInit {
   url: string
-  method?: string
-  headers?: object
-  body?: any
 }
 
 const withBaseUrl = (baseUrl: string) => (req: Request) => {
@@ -92,17 +89,15 @@ const withEncodedBody = <A, B>(encoder: Encoder<A, B>) => (req: Request) => {
   return req
 }
 
-export type Fetch = (url: string, req: Request) => Promise<Response>
+export type UnaryFetch = (req: Request) => Promise<Response>
 
-export type Fetch1 = (req: Request) => Promise<Response>
+export type BinaryFetch = (url: string, init: Request) => Promise<Response>
 
-const fetch1 = (fetch: Fetch): Fetch1 => (req: Request) => fetch(req.url, req)
+const fetch1 = (fetch: BinaryFetch): UnaryFetch => (req: Request) => fetch(req.url, req)
 
-export type Retryable<T> = () => T
+export type RetryableFetch = () => Promise<Response>
 
-export type RetryableFetch = Retryable<Promise<Response>>
-
-const retryable = (fetch1: Fetch1) => (req: Request): RetryableFetch => () => fetch1(req)
+const retryable = (fetch: UnaryFetch) => (req: Request): RetryableFetch => () => fetch(req)
 
 const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
   if (res.status === 204) {
