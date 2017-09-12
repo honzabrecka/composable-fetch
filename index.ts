@@ -2,6 +2,7 @@ const isPromise = (v: any) => !!v
   && (typeof v === 'object' || typeof v === 'function')
   && typeof v.then === 'function'
 
+export function pipeP<T>(): (v: T) => Promise<T>
 export function pipeP<T1, T2>(f1: (v: T1) => T2 | Promise<T2>): (v: T1) => Promise<T2>
 export function pipeP<T1, T2, T3>(f1: (v: T1) => T2 | Promise<T2>, f2: (v: T2) => T3 | Promise<T3>): (v: T1) => Promise<T3>
 export function pipeP<T1, T2, T3, T4>(f1: (v: T1) => T2 | Promise<T2>, f2: (v: T2) => T3 | Promise<T3>, f3: (v: T3) => T4 | Promise<T4>): (v: T1) => Promise<T4>
