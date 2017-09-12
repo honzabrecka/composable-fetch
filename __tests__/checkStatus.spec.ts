@@ -1,9 +1,31 @@
+import { forAll, generators } from 'rapid-check'
 import { composableFetch } from '../index'
 
 describe('checkStatus', () => {
-  it('passes untouched res for res.status >= 200 && res.status < 400', async () => {
-    const res = { status: 200 }
-    expect(composableFetch.checkStatus(res as any)).toBe(res)
+  it('passes untouched res for res.status >= 200 && res.status < 400', () => {
+    const prop = (status) => {
+      const res = { status }
+      return composableFetch.checkStatus(res as any) === res
+    }
+    const [result] = forAll(generators.choose(200, 399), prop)
+    expect(result).toBe(true)
+  })
+
+  it('fails for res.status < 200 && res.status >= 400', () => {
+    const prop = (status) => {
+      const res = { status }
+      try {
+        composableFetch.checkStatus(res as any)
+        return false
+      } catch (_) {
+        return true
+      }
+    }
+    const [result] = forAll(generators.oneOf(
+      generators.choose(100, 199),
+      generators.choose(400, 599),
+    ), prop)
+    expect(result).toBe(true)
   })
 
   it('fails for res.status < 200', async () => {
