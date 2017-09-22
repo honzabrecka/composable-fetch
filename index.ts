@@ -1,4 +1,4 @@
-const isPromise = (v: any) => !!v
+const isPromise = (v: any): v is Promise<any> => !!v
   && (typeof v === 'object' || typeof v === 'function')
   && typeof v.then === 'function'
 
@@ -41,7 +41,7 @@ export function pipeP(...fns: Function[]) {
         value = f(value)
         if (isPromise(value))
           value
-            .then((value: any) => run(fns, value))
+            .then((value) => run(fns, value))
             .catch(reject)
         else
           run(fns, value)
