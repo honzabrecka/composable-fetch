@@ -75,7 +75,7 @@ composableFetch.withRetry(6, delays.limited(3, delays.linear()))
 // retries after 1 sec, then 2 secs, 3 secs, then 1 sec, 2 secs, 3 secs
 ```
 
-Retry is often used together with `composableFetch.timeout`.
+Retry is often used together with `composableFetch.timeout`. Please note that when the timeout is reached, the fetch request is not killed. In other words request will always finish.
 
 If you're dealing with a legacy API which may or may not successfully respond, then the following pattern may be used:
 
