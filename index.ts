@@ -132,9 +132,11 @@ const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
 
 const decodeResponse = (res: Response) => {
   const contentType = (res.headers.get('content-type') || '')
-  return contentType.indexOf('application/json') === 0
-    ? decodeJSONResponse(res)
-    : decodeTextResponse(res)
+  if (contentType.indexOf('application/json') === 0)
+    return decodeJSONResponse(res)
+  if (contentType.indexOf('application/x-www-form-urlencoded') === 0)
+    return decodeFormDataResponse(res)
+  return decodeTextResponse(res)
 }
 
 const decodeTextResponse = async (res: Response) => {
@@ -152,6 +154,26 @@ const decodeJSONResponse = async (res: Response) => {
   return res
 }
 
+const decodeFormDataResponse = async (res: Response) => {
+  try {
+    (res as any).data = await res.formData()
+  } catch (e) {
+    throw errorWithAttachedResponse(e.message, res)
+  }
+
+  return res
+}
+
+const decodeArrayBufferResponse = async (res: Response) => {
+  (res as any).data = await res.arrayBuffer()
+  return res
+}
+
+const decodeBlobResponse = async (res: Response) => {
+  (res as any).data = await res.blob()
+  return res
+}
+
 const checkStatus = (res: Response) => {
   if (res.status < 200 || res.status >= 400)
     throw errorWithAttachedResponse('Invalid status code', res)
@@ -160,6 +182,9 @@ const checkStatus = (res: Response) => {
 
 export const composableFetch = {
   checkStatus,
+  decodeArrayBufferResponse,
+  decodeBlobResponse,
+  decodeFormDataResponse,
   decodeJSONResponse,
   decodeResponse,
   decodeTextResponse,

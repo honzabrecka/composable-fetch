@@ -37,4 +37,13 @@ describe('decodeResponse', () => {
     const decodedRes = await composableFetch.decodeResponse(res as any)
     expect((decodedRes as any).data).toBe('foo')
   })
+
+  it('decodes formData response when content-type starts with application/x-www-form-urlencoded', async () => {
+    const res = {
+      formData: () => Promise.resolve('foo'),
+      headers: new Headers({ 'content-type': 'application/x-www-form-urlencoded' }),
+    }
+    const decodedRes = await composableFetch.decodeResponse(res as any)
+    expect((decodedRes as any).data).toBe('foo')
+  })
 })
