@@ -100,8 +100,8 @@ export type RetryableFetch = () => Promise<Response>
 
 const retryable = (fetch: UnaryFetch) => (req: Request): RetryableFetch => () => fetch(req)
 
-const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch => () =>
-  Promise.race([fetch(), delayedFail(timeout)])
+const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch =>
+  () => Promise.race([fetch(), delayedFail(timeout)])
 
 const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
   return new Promise((resolve, reject) => {
@@ -131,7 +131,7 @@ const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
 }
 
 const decodeResponse = (res: Response) => {
-  const contentType = (res.headers.get('content-type') || '')
+  const contentType = res.headers.get('content-type') || ''
   if (contentType.indexOf('application/json') === 0)
     return decodeJSONResponse(res)
   if (contentType.indexOf('application/x-www-form-urlencoded') === 0)
@@ -147,21 +147,19 @@ const decodeTextResponse = async (res: Response) => {
 const decodeJSONResponse = async (res: Response) => {
   try {
     (res as any).data = await res.json()
+    return res
   } catch (e) {
     throw errorWithAttachedResponse(e.message, res)
   }
-
-  return res
 }
 
 const decodeFormDataResponse = async (res: Response) => {
   try {
     (res as any).data = await res.formData()
+    return res
   } catch (e) {
     throw errorWithAttachedResponse(e.message, res)
   }
-
-  return res
 }
 
 const decodeArrayBufferResponse = async (res: Response) => {
