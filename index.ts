@@ -130,6 +130,8 @@ const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
   return res
 }
 
+const clone = (res: Response) => res.clone()
+
 const decodeResponse = (res: Response) => {
   const contentType = res.headers.get('content-type') || ''
   if (contentType.indexOf('application/json') === 0)
@@ -180,6 +182,7 @@ const checkStatus = (res: Response) => {
 
 export const composableFetch = {
   checkStatus,
+  clone,
   decodeArrayBufferResponse,
   decodeBlobResponse,
   decodeFormDataResponse,
