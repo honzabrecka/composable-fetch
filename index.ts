@@ -50,6 +50,17 @@ export function pipeP(...fns: Function[]) {
   })
 }
 
+export const tryCatchP = <A, B>(
+  trier: (value: A) => Promise<B>,
+  catcher: (err: Error, value: A) => B,
+) => async (value: A) => {
+  try {
+    return await trier(value)
+  } catch (err) {
+    return catcher(err, value)
+  }
+}
+
 export const delay = (time: number) => new Promise<void>((resolve, _) => {
   setTimeout(() => resolve(), time)
 })
