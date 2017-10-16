@@ -1,4 +1,7 @@
+import { Headers } from 'node-fetch'
 import { composableFetch } from '../index'
+
+(global as any).Headers = Headers
 
 describe('withHeader', () => {
   it('assocs header', () => {
