@@ -19,7 +19,7 @@
     "transit-js": "^0.8.846",
     "ts-jest": "^20.0.10",
     "tslint": "^5.6.0",
-    "typescript": "^2.5.2"
+    "typescript": "^2.6.1"
   },
   "scripts": {
     "tsc": "tsc",

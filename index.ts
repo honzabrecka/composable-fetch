@@ -94,8 +94,9 @@ const withHeader = (header: string, value: string) => (req: Request) => {
     else
       req.headers.append(header, value)
   else {
-    req.headers = req.headers || {}
-    req.headers[header.toLowerCase()] = value
+    // Hack for backward compatibility
+    (req.headers as any) = req.headers || {};
+    (req.headers as any)[header.toLowerCase()] = value
   }
 
   return req
