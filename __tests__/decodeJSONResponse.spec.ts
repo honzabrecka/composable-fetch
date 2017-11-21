@@ -1,4 +1,4 @@
-import { composableFetch } from '../index'
+import { composableFetch, DecodeResponseError } from '../index'
 
 describe('decodeJSONResponse', () => {
   it('decodes json response', async () => {
@@ -12,7 +12,7 @@ describe('decodeJSONResponse', () => {
     try {
       await composableFetch.decodeJSONResponse(res as any)
     } catch (e) {
-      expect(e).toBeInstanceOf(Error)
+      expect(e).toBeInstanceOf(DecodeResponseError)
       expect(e.res).toBe(res)
     }
   })

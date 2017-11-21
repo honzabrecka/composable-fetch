@@ -61,12 +61,32 @@ export const tryCatchP = <A, B>(
   }
 }
 
+export class TimeoutError extends Error {}
+
+export class RetryError extends Error {
+  constructor(message: string, public errors: Error[]) {
+    super(message);
+  }
+}
+
+export class DecodeResponseError extends Error {
+  constructor(message: string, public res: Response) {
+    super(message);
+  }
+}
+
+export class InvalidStatusError extends Error {
+  constructor(message: string, public res: Response) {
+    super(message);
+  }
+}
+
 export const delay = (time: number) => new Promise<void>((resolve, _) => {
   setTimeout(() => resolve(), time)
 })
 
 const delayedFail = (timeout: number) => delay(timeout).then(() => {
-  throw new Error('Timeout')
+  throw new TimeoutError()
 })
 
 export type Delay = (i: number) => Promise<void>
@@ -125,21 +145,15 @@ const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch
 
 const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
   return new Promise((resolve, reject) => {
-    (function run(i: number) {
+    (function run(i: number, errors: Error[]) {
       if (i === max + 1)
-        reject(new Error('Retry failed'))
+        reject(new RetryError('Retry failed.', errors))
       else
         fetch()
           .then(resolve)
-          .catch((_) => delay(i).then(() => run(i + 1)))
-    })(1)
+          .catch((error) => delay(i).then(() => run(i + 1, [...errors, error])))
+    })(1, [])
   })
-}
-
-const errorWithAttachedResponse = (message: string, res: Response) => {
-  const error = new Error(message);
-  (error as any).res = res
-  return error
 }
 
 const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
@@ -171,7 +185,7 @@ const decodeJSONResponse = async (res: Response) => {
     (res as any).data = await res.json()
     return res
   } catch (e) {
-    throw errorWithAttachedResponse(e.message, res)
+    throw new DecodeResponseError(e.message, res)
   }
 }
 
@@ -180,7 +194,7 @@ const decodeFormDataResponse = async (res: Response) => {
     (res as any).data = await res.formData()
     return res
   } catch (e) {
-    throw errorWithAttachedResponse(e.message, res)
+    throw new DecodeResponseError(e.message, res)
   }
 }
 
@@ -196,7 +210,7 @@ const decodeBlobResponse = async (res: Response) => {
 
 const checkStatus = (res: Response) => {
   if (res.status < 200 || res.status >= 400)
-    throw errorWithAttachedResponse('Invalid status code', res)
+    throw new InvalidStatusError('Invalid status code: ' + res.status, res)
   return res
 }
 
