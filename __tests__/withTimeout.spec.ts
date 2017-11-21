@@ -7,6 +7,7 @@ describe('withTimeout', () => {
       fail()
     } catch (e) {
       expect(e).toBeInstanceOf(Error)
+      expect(e.id).toBe('TimeoutError')
     }
   })
 

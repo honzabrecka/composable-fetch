@@ -61,12 +61,19 @@ export const tryCatchP = <A, B>(
   }
 }
 
+const newError = (id: string, message: string, res?: Response) => {
+  const error = new Error(message);
+  (error as any).id = id;
+  if (res) (error as any).res = res;
+  return error
+}
+
 export const delay = (time: number) => new Promise<void>((resolve, _) => {
   setTimeout(() => resolve(), time)
 })
 
 const delayedFail = (timeout: number) => delay(timeout).then(() => {
-  throw new Error('Timeout')
+  throw newError('TimeoutError', 'Timeout')
 })
 
 export type Delay = (i: number) => Promise<void>
@@ -127,7 +134,7 @@ const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: R
   return new Promise((resolve, reject) => {
     (function run(i: number, errors: Error[]) {
       if (i === max + 1) {
-        const error = new Error('Retry failed');
+        const error = newError('RetryError', 'Retry failed');
         (error as any).errors = errors
         reject(error)
       } else
@@ -136,12 +143,6 @@ const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: R
           .catch((error) => delay(i).then(() => run(i + 1, [...errors, error])))
     })(1, [])
   })
-}
-
-const errorWithAttachedResponse = (message: string, res: Response) => {
-  const error = new Error(message);
-  (error as any).res = res
-  return error
 }
 
 const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
@@ -173,7 +174,7 @@ const decodeJSONResponse = async (res: Response) => {
     (res as any).data = await res.json()
     return res
   } catch (e) {
-    throw errorWithAttachedResponse(e.message, res)
+    throw newError('DecodeResponseError', e.message, res)
   }
 }
 
@@ -182,7 +183,7 @@ const decodeFormDataResponse = async (res: Response) => {
     (res as any).data = await res.formData()
     return res
   } catch (e) {
-    throw errorWithAttachedResponse(e.message, res)
+    throw newError('DecodeResponseError', e.message, res)
   }
 }
 
@@ -198,7 +199,7 @@ const decodeBlobResponse = async (res: Response) => {
 
 const checkStatus = (res: Response) => {
   if (res.status < 200 || res.status >= 400)
-    throw errorWithAttachedResponse('Invalid status code', res)
+    throw newError('InvalidStatusCodeError', 'Invalid status code: ' + res.status, res)
   return res
 }
 

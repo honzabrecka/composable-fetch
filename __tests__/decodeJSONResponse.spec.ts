@@ -13,6 +13,7 @@ describe('decodeJSONResponse', () => {
       await composableFetch.decodeJSONResponse(res as any)
     } catch (e) {
       expect(e).toBeInstanceOf(Error)
+      expect(e.id).toBe('DecodeResponseError')
       expect(e.res).toBe(res)
     }
   })

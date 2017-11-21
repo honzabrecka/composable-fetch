@@ -19,6 +19,7 @@ describe('withRetry', () => {
       fail()
     } catch (e) {
       expect(e).toBeInstanceOf(Error)
+      expect(e.id).toBe('RetryError')
       expect(e.errors).toEqual(['no 1', 'no 2', 'no 3'])
     }
   })
