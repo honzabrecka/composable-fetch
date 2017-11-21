@@ -68,7 +68,9 @@ const newError = (id: string, message: string, res?: Response) => {
   return error
 }
 
-export const delay = (time: number) => new Promise<void>((resolve, _) => {
+export type Delay = (t: number) => Promise<void>
+
+export const delay: Delay = (time) => new Promise((resolve, _) => {
   setTimeout(() => resolve(), time)
 })
 
@@ -76,13 +78,20 @@ const delayedFail = (timeout: number) => delay(timeout).then(() => {
   throw newError('TimeoutError', 'Timeout')
 })
 
-export type Delay = (i: number) => Promise<void>
+const tapAndDelay = (f: Function, time: number) => {
+  f(time)
+  return delay(time)
+}
+
+const nothing = (t: number): any => undefined
 
 export const delays = {
-  constant: (time: number = 1000): Delay => (i: number) => delay(time),
-  exponential: (time: number = 1000): Delay => (i: number) => delay(i * i * time),
+  tapAndDelay,
+  nothing,
+  constant: (time = 1000, f = nothing): Delay => (i: number) => tapAndDelay(f, time),
+  exponential: (time = 1000, f = nothing): Delay => (i: number) => tapAndDelay(f, i * i * time),
   limited: (max: number, delay: Delay) => (i: number) => delay(((i - 1) % max) + 1),
-  linear: (time: number = 1000): Delay => (i: number) => delay(i * time),
+  linear: (time = 1000, f = nothing): Delay => (i: number) => tapAndDelay(f, i * time),
 }
 
 export interface Request extends RequestInit {
