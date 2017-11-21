@@ -1,9 +1,9 @@
 import { composableFetch, delays } from '../index'
 
 const tries = [
-  () => Promise.reject('no'),
-  () => Promise.reject('no'),
-  () => Promise.reject('no'),
+  () => Promise.reject('no 1'),
+  () => Promise.reject('no 2'),
+  () => Promise.reject('no 3'),
   () => Promise.resolve('yes'),
 ]
 
@@ -19,6 +19,7 @@ describe('withRetry', () => {
       fail()
     } catch (e) {
       expect(e).toBeInstanceOf(Error)
+      expect(e.errors).toEqual(['no 1', 'no 2', 'no 3'])
     }
   })
 

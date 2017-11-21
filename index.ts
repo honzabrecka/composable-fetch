@@ -125,14 +125,16 @@ const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch
 
 const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
   return new Promise((resolve, reject) => {
-    (function run(i: number) {
-      if (i === max + 1)
-        reject(new Error('Retry failed'))
-      else
+    (function run(i: number, errors: Error[]) {
+      if (i === max + 1) {
+        const error = new Error('Retry failed');
+        (error as any).errors = errors
+        reject(error)
+      } else
         fetch()
           .then(resolve)
-          .catch((_) => delay(i).then(() => run(i + 1)))
-    })(1)
+          .catch((error) => delay(i).then(() => run(i + 1, [...errors, error])))
+    })(1, [])
   })
 }
 
