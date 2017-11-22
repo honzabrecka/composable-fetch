@@ -68,6 +68,13 @@ const newError = (id: string, message: string, res?: Response) => {
   return error
 }
 
+export const errorIds = {
+  TimeoutError: 'TimeoutError',
+  RetryError: 'RetryError',
+  DecodeResponseError: 'DecodeResponseError',
+  InvalidStatusCodeError: 'InvalidStatusCodeError',
+}
+
 export type Delay = (t: number) => Promise<void>
 
 export const delay: Delay = (time) => new Promise((resolve, _) => {
@@ -75,7 +82,7 @@ export const delay: Delay = (time) => new Promise((resolve, _) => {
 })
 
 const delayedFail = (timeout: number) => delay(timeout).then(() => {
-  throw newError('TimeoutError', 'Timeout')
+  throw newError(errorIds.TimeoutError, 'Timeout')
 })
 
 const tapAndDelay = (f: Function, time: number) => {
@@ -143,7 +150,7 @@ const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: R
   return new Promise((resolve, reject) => {
     (function run(i: number, errors: Error[]) {
       if (i === max + 1) {
-        const error = newError('RetryError', 'Retry failed');
+        const error = newError(errorIds.RetryError, 'Retry failed');
         (error as any).errors = errors
         reject(error)
       } else
@@ -183,7 +190,7 @@ const decodeJSONResponse = async (res: Response) => {
     (res as any).data = await res.json()
     return res
   } catch (e) {
-    throw newError('DecodeResponseError', e.message, res)
+    throw newError(errorIds.DecodeResponseError, e.message, res)
   }
 }
 
@@ -192,7 +199,7 @@ const decodeFormDataResponse = async (res: Response) => {
     (res as any).data = await res.formData()
     return res
   } catch (e) {
-    throw newError('DecodeResponseError', e.message, res)
+    throw newError(errorIds.DecodeResponseError, e.message, res)
   }
 }
 
@@ -208,7 +215,7 @@ const decodeBlobResponse = async (res: Response) => {
 
 const checkStatus = (res: Response) => {
   if (res.status < 200 || res.status >= 400)
-    throw newError('InvalidStatusCodeError', 'Invalid status code: ' + res.status, res)
+    throw newError(errorIds.InvalidStatusCodeError, 'Invalid status code: ' + res.status, res)
   return res
 }
 
