@@ -219,6 +219,19 @@ const checkStatus = (res: Response) => {
   return res
 }
 
+const logFetchError = (error: Error, req: Request) => {
+  const { id, message } = (error as any)
+  console.log('>>> [fetch error]:', message)
+  console.log(req)
+
+  if (id === errorIds.RetryError)
+    console.log((error as any).errors)
+  if (id === errorIds.DecodeResponseError || id === errorIds.InvalidStatusCodeError)
+    console.log((error as any).res.data)
+
+  throw error
+}
+
 export const composableFetch = {
   checkStatus,
   clone,
@@ -229,6 +242,7 @@ export const composableFetch = {
   decodeResponse,
   decodeTextResponse,
   fetch1,
+  logFetchError,
   retryable,
   withBaseUrl,
   withEncodedBody,

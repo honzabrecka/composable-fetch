@@ -1,16 +1,19 @@
-const { composableFetch, pipeP } = require('../dist/index')
+const { composableFetch, pipeP, tryCatchP } = require('../dist/index')
 const $fetch = require('isomorphic-fetch')
 const transit = require('transit-js')
 const log = console.log.bind(console)
 const writer = transit.writer('json')
 const reader = transit.reader('json')
 
-const fetch = pipeP(
-  composableFetch.retryable(composableFetch.fetch1($fetch)),
-  composableFetch.withTimeout(1000),
-  composableFetch.withRetry(),
-  composableFetch.withSafe204(),
-  composableFetch.checkStatus,
+const fetch = tryCatchP(
+  pipeP(
+    composableFetch.retryable(composableFetch.fetch1($fetch)),
+    composableFetch.withTimeout(1000),
+    composableFetch.withRetry(),
+    composableFetch.withSafe204(),
+    composableFetch.checkStatus,
+  ),
+  composableFetch.logFetchError,
 )
 
 const JSONReq = pipeP(
