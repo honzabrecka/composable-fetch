@@ -6,14 +6,11 @@ const writer = transit.writer('json')
 const reader = transit.reader('json')
 
 const fetch = tryCatchP(
-  pipeP(
-    composableFetch.retryable(composableFetch.fetch1($fetch)),
-    composableFetch.withTimeout(1000),
-    composableFetch.withRetry(),
-    composableFetch.withSafe204(),
-    composableFetch.checkStatus,
-  ),
-  composableFetch.logFetchError,
+  composableFetch.retryable(composableFetch.fetch1($fetch)),
+  composableFetch.withTimeout(1000),
+  composableFetch.withRetry(),
+  composableFetch.withSafe204(),
+  composableFetch.checkStatus,
 )
 
 const JSONReq = pipeP(
@@ -25,10 +22,13 @@ const JSONReq = pipeP(
 
 const JSONRes = composableFetch.decodeJSONResponse
 
-const fetchJSON = pipeP(
-  JSONReq,
-  fetch,
-  JSONRes,
+const fetchJSON = tryCatchP(
+  pipeP(
+    JSONReq,
+    fetch,
+    JSONRes,
+  ),
+  composableFetch.logFetchError,
 )
 
 const encodeTransit = (v) => writer.write(v)
@@ -50,11 +50,25 @@ const transitRes = pipeP(
   decodeTransit,
 )
 
-const fetchTransit = pipeP(
-  transitReq,
-  fetch,
-  transitRes,
+const fetchTransit = tryCatchP(
+  pipeP(
+    transitReq,
+    fetch,
+    transitRes,
+  ),
+  composableFetch.logFetchError,
 )
+
+module.exports = {
+  fetch,
+  fetchJSON,
+  fetchTransit,
+}
+
+
+//
+// usage:
+//
 
 fetchJSON({ url: '/status' }).then(log).catch(log)
 // or

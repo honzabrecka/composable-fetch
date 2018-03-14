@@ -11,7 +11,7 @@ const fetchJSON = pipeP(
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
-  composableFetch.decodeResponse,
+  composableFetch.decodeJSONResponse,
   composableFetch.checkStatus
 )
 
