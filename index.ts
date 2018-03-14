@@ -129,7 +129,7 @@ export type Encoder<A, B> = (v: A) => B
 
 const withEncodedBody = <A, B>(encoder: Encoder<A, B>) => (req: Request) => {
   if ((req.method && req.method.toLowerCase() !== 'get') && req.body)
-    req.body = encoder(req.body)
+    req.body = encoder(req.body as any) as any
   return req
 }
 
