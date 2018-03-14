@@ -177,7 +177,9 @@ const decodeResponse = (res: Response) => {
     return decodeJSONResponse(res)
   if (contentType.indexOf('application/x-www-form-urlencoded') === 0)
     return decodeFormDataResponse(res)
-  return decodeTextResponse(res)
+  if (contentType.indexOf('text/') === 0)
+    return decodeTextResponse(res)
+  return res
 }
 
 const decodeTextResponse = async (res: Response) => {

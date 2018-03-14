@@ -13,7 +13,7 @@ class Headers {
 describe('decodeResponse', () => {
   it('decodes text response', async () => {
     const res = {
-      headers: new Headers({}),
+      headers: new Headers({ 'content-type': 'text/html' }),
       text: () => Promise.resolve('foo'),
     }
     const decodedRes = await composableFetch.decodeResponse(res as any)
