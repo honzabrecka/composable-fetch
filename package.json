@@ -23,7 +23,7 @@
   "scripts": {
     "tsc": "tsc",
     "jest": "jest",
-    "tslint": "tslint 'src/**/*.ts?(x)' -t verbose"
+    "tslint": "tslint -c tslint.json '{index.ts,__tests__/**/*.ts}' -t verbose"
   },
   "jest": {
     "transform": {

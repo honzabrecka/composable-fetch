@@ -11,7 +11,9 @@
         "interface-name": [true, "never-prefix"],
         "curly": [true, "as-needed"],
         "no-shadowed-variable": false,
-        "ban-types": [false]
+        "ban-types": [false],
+        "object-literal-sort-keys": false,
+        "no-console": false
     },
     "rulesDirectory": []
 }

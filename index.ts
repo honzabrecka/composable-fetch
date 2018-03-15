@@ -63,8 +63,8 @@ export const tryCatchP = <A, B>(
 
 const newError = (id: string, message: string, res?: Response) => {
   const error = new Error(message);
-  (error as any).id = id;
-  if (res) (error as any).res = res;
+  (error as any).id = id
+  if (res) (error as any).res = res
   return error
 }
 
