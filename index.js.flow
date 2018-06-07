@@ -1,0 +1,99 @@
+// @flow
+
+export type UnaryFn<A, B> = ((value: A) => B) | ((value: A) => Promise<B>)
+
+export type UnaryFnP<A, B> = (value: A) => Promise<B>
+// declare type Pipe = (<A, B, C, D, E, F, G>(
+//   ab: UnaryFn<A, B>,
+//   bc: UnaryFn<B, C>,
+//   cd: UnaryFn<C, D>,
+//   de: UnaryFn<D, E>,
+//   ef: UnaryFn<E, F>,
+//   fg: UnaryFn<F, G>,
+// ) => UnaryFnP<A, G>) &
+//   (<A, B, C, D, E, F>(
+//     ab: UnaryFn<A, B>,
+//     bc: UnaryFn<B, C>,
+//     cd: UnaryFn<C, D>,
+//     de: UnaryFn<D, E>,
+//     ef: UnaryFn<E, F>,
+//   ) => UnaryFnP<A, F>) &
+//   (<A, B, C, D, E>(
+//     ab: UnaryFn<A, B>,
+//     bc: UnaryFn<B, C>,
+//     cd: UnaryFn<C, D>,
+//     de: UnaryFn<D, E>,
+//   ) => UnaryFnP<A, E>) &
+//   (<A, B, C, D>(
+//     ab: UnaryFn<A, B>,
+//     bc: UnaryFn<B, C>,
+//     cd: UnaryFn<C, D>,
+//   ) => UnaryFnP<A, D>) &
+//   (<A, B, C>(ab: UnaryFn<A, B>, bc: UnaryFn<B, C>) => UnaryFnP<A, C>) &
+//   (<A, B>(ab: UnaryFn<A, B>) => UnaryFnP<A, B>)
+
+export type Encoder<A, B> = (value: A) => B
+
+export type Request = {
+  url: string | URL,
+  method?: 'GET' | 'POST' | 'PUT' | 'DELETE',
+  headers?: { [string]: string },
+  body?: any,
+  [string]: any,
+}
+
+// declare export type Response = any
+
+export type RetryableFetch = () => Promise<Response>
+
+export type Delay = (t: number) => Promise<void>
+
+export type Effect = (t: number) => any
+
+declare export var delays: {
+  constant: (time?: number, f?: Effect) => Delay,
+  exponential: (time?: number, f?: Effect) => Delay,
+  limited: (max: number, delay: Delay) => Delay,
+  linear: (time?: number, f?: Effect) => Delay,
+}
+
+export type UnaryFetch = (req: Request) => Promise<Response>
+
+export type BinaryFetch = (
+  url: string | URL,
+  init: any,
+) => Promise<Response>
+
+declare export var composableFetch: {
+  checkStatus: (res: Response) => Response,
+  clone: (res: Response) => Response,
+  decodeArrayBufferResponse: (res: Response) => Response,
+  decodeBlobResponse: (res: Response) => Response,
+  decodeFormDataResponse: (res: Response) => Response,
+  decodeJSONResponse: (res: Response) => Response,
+  decodeResponse: (res: Response) => Response,
+  decodeTextResponse: (res: Response) => Response,
+  fetch1: (fetch: BinaryFetch) => UnaryFetch,
+  logFetchError: (error: Error, req: Request) => void,
+  retryable: (fetch: UnaryFetch) => (req: Request) => RetryableFetch,
+  withBaseUrl: (baseUrl: string) => (req: Request) => Request,
+  withEncodedBody: <A, B>(
+    encoder: Encoder<A, B>,
+  ) => (req: Request) => Request,
+  withHeader: (header: string, value: string) => (req: Request) => Request,
+  withRetry: (
+    max: number,
+    delay: Delay,
+  ) => (fetch: RetryableFetch) => Promise<Response>,
+  withSafe204: (text?: string, json?: any) => (res: Response) => Response,
+  withTimeout: (
+    timeout: number,
+  ) => (fetch: RetryableFetch) => RetryableFetch,
+}
+
+declare export var pipeP: <A, B>(...fns: Function[]) => UnaryFnP<A, B>
+
+declare export var tryCatchP: <A, B>(
+  trier: (value: A) => Promise<B>,
+  catcher: (err: Error, value: A) => B,
+) => UnaryFnP<A, B>

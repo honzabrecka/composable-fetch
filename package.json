@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/jest": "^23.0.0",
     "@types/node": "^10.3.2",
+    "flow-bin": "^0.74.0",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^23.1.0",
     "rapid-check": "^0.2.0",
@@ -23,7 +24,9 @@
   "scripts": {
     "tsc": "tsc",
     "jest": "jest",
-    "tslint": "tslint -c tslint.json '{index.ts,__tests__/**/*.ts}' -t verbose"
+    "tslint": "tslint -c tslint.json '{index.ts,__tests__/**/*.ts}' -t verbose",
+    "flow:copy": "cp index.js.flow dist",
+    "build": "yarn tsc && yarn flow:copy"
   },
   "jest": {
     "transform": {

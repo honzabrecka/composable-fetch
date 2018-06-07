@@ -15,4 +15,5 @@ jobs:
             - ./node_modules
       - run: yarn tslint
       - run: yarn jest
-      - run: yarn tsc
+      - run: yarn flow check
+      - run: yarn build
