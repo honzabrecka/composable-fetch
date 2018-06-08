@@ -8,11 +8,11 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      - run: npm install
+      - run: yarn
       - save_cache:
           key: dependency-cache-{{ checksum "package.json" }}
           paths:
             - ./node_modules
-      - run: npm run tslint
-      - run: npm run jest
-      - run: npm run tsc
+      - run: yarn tslint
+      - run: yarn jest
+      - run: yarn tsc
