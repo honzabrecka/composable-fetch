@@ -1,6 +1,6 @@
 // @flow
 
-export type UnaryFn<A, B> = ((value: A) => B) | ((value: A) => Promise<B>)
+export type UnaryFn<A, B> = (value: A) => B | Promise<B>
 
 export type UnaryFnP<A, B> = (value: A) => Promise<B>
 // declare type Pipe = (<A, B, C, D, E, F, G>(

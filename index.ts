@@ -259,3 +259,13 @@ export const composableFetch = {
   withSafe204,
   withTimeout,
 }
+
+const a = (x: number): string => x + ''
+const b = (x: string): number => parseInt(x, 10)
+const aP = (x: number): Promise<string> => Promise.resolve(x + '')
+const bP = (x: string): Promise<number> => Promise.resolve(parseInt(x, 10))
+
+pipeP(a, b)(1)
+pipeP(aP, bP)(1)
+pipeP(aP, b)(1)
+pipeP(a, bP)(1)
