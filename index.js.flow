@@ -1,9 +1,11 @@
 // @flow
 
-export type UnaryFn<A, B> = (value: A) => B | Promise<B>
+export type UnaryFn<A, B> = ((value: A) => B | Promise<B>) | ((value: Promise<A>) => B | Promise<B>)
 
-export type UnaryFnP<A, B> = (value: A) => Promise<B>
-// declare type Pipe = (<A, B, C, D, E, F, G>(
+export type UnaryFnP<A, B> = ((value: A) => Promise<B>)
+
+declare type Pipe =
+// (<A, B, C, D, E, F, G>(
 //   ab: UnaryFn<A, B>,
 //   bc: UnaryFn<B, C>,
 //   cd: UnaryFn<C, D>,
@@ -29,8 +31,8 @@ export type UnaryFnP<A, B> = (value: A) => Promise<B>
 //     bc: UnaryFn<B, C>,
 //     cd: UnaryFn<C, D>,
 //   ) => UnaryFnP<A, D>) &
-//   (<A, B, C>(ab: UnaryFn<A, B>, bc: UnaryFn<B, C>) => UnaryFnP<A, C>) &
-//   (<A, B>(ab: UnaryFn<A, B>) => UnaryFnP<A, B>)
+  (<A, B, C>(ab: UnaryFn<A, B>, bc: UnaryFn<B, C>, end: void) => UnaryFnP<A, C>)
+// & (<A, B>(ab: UnaryFn<A, B>) => UnaryFnP<A, B>)
 
 export type Encoder<A, B> = (value: A) => B
 
@@ -92,7 +94,7 @@ declare export var composableFetch: {
   ) => (fetch: RetryableFetch) => RetryableFetch,
 }
 
-declare export var pipeP: <A, B>(...fns: Function[]) => UnaryFnP<A, B>
+declare export var pipeP: Pipe // <A, B>(...fns: Function[]) => UnaryFnP<A, B>
 
 declare export var tryCatchP: <A, B>(
   trier: (value: A) => Promise<B>,
