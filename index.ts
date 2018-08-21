@@ -125,6 +125,11 @@ const withHeader = (header: string, value: string) => (req: Request) => {
   return req
 }
 
+const withCredentials = (value: 'omit' | 'same-origin' | 'include') => (req: Request) => {
+  req.credentials = value
+  return req
+}
+
 export type Encoder<A, B> = (v: A) => B
 
 const withEncodedBody = <A, B>(encoder: Encoder<A, B>) => (req: Request) => {
@@ -249,6 +254,7 @@ export const composableFetch = {
   withBaseUrl,
   withEncodedBody,
   withHeader,
+  withCredentials,
   withRetry,
   withSafe204,
   withTimeout,

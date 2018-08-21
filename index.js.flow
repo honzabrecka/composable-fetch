@@ -81,6 +81,7 @@ declare export var composableFetch: {
     encoder: Encoder<A, B>,
   ) => (req: Request) => Request,
   withHeader: (header: string, value: string) => (req: Request) => Request,
+  withCredentials: (value: 'omit' | 'same-origin' | 'include') => (req: Request) => Request,
   withRetry: (
     max: number,
     delay: Delay,
