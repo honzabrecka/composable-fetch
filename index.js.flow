@@ -5,34 +5,84 @@ export type UnaryFn<A, B> = ((value: A) => B | Promise<B>) | ((value: Promise<A>
 export type UnaryFnP<A, B> = ((value: A) => Promise<B>)
 
 declare type Pipe =
-// (<A, B, C, D, E, F, G>(
-//   ab: UnaryFn<A, B>,
-//   bc: UnaryFn<B, C>,
-//   cd: UnaryFn<C, D>,
-//   de: UnaryFn<D, E>,
-//   ef: UnaryFn<E, F>,
-//   fg: UnaryFn<F, G>,
-// ) => UnaryFnP<A, G>) &
-//   (<A, B, C, D, E, F>(
-//     ab: UnaryFn<A, B>,
-//     bc: UnaryFn<B, C>,
-//     cd: UnaryFn<C, D>,
-//     de: UnaryFn<D, E>,
-//     ef: UnaryFn<E, F>,
-//   ) => UnaryFnP<A, F>) &
-//   (<A, B, C, D, E>(
-//     ab: UnaryFn<A, B>,
-//     bc: UnaryFn<B, C>,
-//     cd: UnaryFn<C, D>,
-//     de: UnaryFn<D, E>,
-//   ) => UnaryFnP<A, E>) &
-//   (<A, B, C, D>(
-//     ab: UnaryFn<A, B>,
-//     bc: UnaryFn<B, C>,
-//     cd: UnaryFn<C, D>,
-//   ) => UnaryFnP<A, D>) &
+(<A, B, C, D, E, F, G, H, I, J, K>(
+  ab: UnaryFn<A, B>,
+  bc: UnaryFn<B, C>,
+  cd: UnaryFn<C, D>,
+  de: UnaryFn<D, E>,
+  ef: UnaryFn<E, F>,
+  fg: UnaryFn<F, G>,
+  gh: UnaryFn<G, H>,
+  hi: UnaryFn<H, I>,
+  ij: UnaryFn<I, J>,
+  jk: UnaryFn<J, K>,
+  end: void,
+) => UnaryFnP<A, K>) &
+(<A, B, C, D, E, F, G, H, I, J>(
+  ab: UnaryFn<A, B>,
+  bc: UnaryFn<B, C>,
+  cd: UnaryFn<C, D>,
+  de: UnaryFn<D, E>,
+  ef: UnaryFn<E, F>,
+  fg: UnaryFn<F, G>,
+  gh: UnaryFn<G, H>,
+  hi: UnaryFn<H, I>,
+  ij: UnaryFn<I, J>,
+  end: void,
+) => UnaryFnP<A, J>) &
+(<A, B, C, D, E, F, G, H, I>(
+  ab: UnaryFn<A, B>,
+  bc: UnaryFn<B, C>,
+  cd: UnaryFn<C, D>,
+  de: UnaryFn<D, E>,
+  ef: UnaryFn<E, F>,
+  fg: UnaryFn<F, G>,
+  gh: UnaryFn<G, H>,
+  hi: UnaryFn<H, I>,
+  end: void,
+) => UnaryFnP<A, I>) &
+(<A, B, C, D, E, F, G, H>(
+  ab: UnaryFn<A, B>,
+  bc: UnaryFn<B, C>,
+  cd: UnaryFn<C, D>,
+  de: UnaryFn<D, E>,
+  ef: UnaryFn<E, F>,
+  fg: UnaryFn<F, G>,
+  gh: UnaryFn<G, H>,
+  end: void,
+) => UnaryFnP<A, H>) &
+(<A, B, C, D, E, F, G>(
+  ab: UnaryFn<A, B>,
+  bc: UnaryFn<B, C>,
+  cd: UnaryFn<C, D>,
+  de: UnaryFn<D, E>,
+  ef: UnaryFn<E, F>,
+  fg: UnaryFn<F, G>,
+  end: void,
+) => UnaryFnP<A, G>) &
+  (<A, B, C, D, E, F>(
+    ab: UnaryFn<A, B>,
+    bc: UnaryFn<B, C>,
+    cd: UnaryFn<C, D>,
+    de: UnaryFn<D, E>,
+    ef: UnaryFn<E, F>,
+    end: void,
+  ) => UnaryFnP<A, F>) &
+  (<A, B, C, D, E>(
+    ab: UnaryFn<A, B>,
+    bc: UnaryFn<B, C>,
+    cd: UnaryFn<C, D>,
+    de: UnaryFn<D, E>,
+    end: void,
+  ) => UnaryFnP<A, E>) &
+  (<A, B, C, D>(
+    ab: UnaryFn<A, B>,
+    bc: UnaryFn<B, C>,
+    cd: UnaryFn<C, D>,
+    end: void,
+  ) => UnaryFnP<A, D>) &
   (<A, B, C>(ab: UnaryFn<A, B>, bc: UnaryFn<B, C>, end: void) => UnaryFnP<A, C>)
-// & (<A, B>(ab: UnaryFn<A, B>) => UnaryFnP<A, B>)
+& (<A, B>(ab: UnaryFn<A, B>, end: void) => UnaryFnP<A, B>)
 
 export type Encoder<A, B> = (value: A) => B
 
@@ -85,8 +135,8 @@ declare export var composableFetch: {
   withHeader: (header: string, value: string) => (req: Request) => Request,
   withCredentials: (value: 'omit' | 'same-origin' | 'include') => (req: Request) => Request,
   withRetry: (
-    max: number,
-    delay: Delay,
+    max?: number,
+    delay?: Delay,
   ) => (fetch: RetryableFetch) => Promise<Response>,
   withSafe204: (text?: string, json?: any) => (res: Response) => Response,
   withTimeout: (
