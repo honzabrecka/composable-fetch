@@ -1,6 +1,18 @@
 import { asyncForAll, generators } from 'rapid-check'
 import { delay, pipeP } from '../index'
 
+const ns = (x: number): string => x + ''
+const sn = (x: string): number => parseInt(x, 10)
+const nsP = (x: number): Promise<string> => Promise.resolve(x + '')
+const snP = (x: string): Promise<number> => Promise.resolve(parseInt(x, 10))
+
+const okPipes: Array<Promise<number>> = [
+  pipeP(ns, sn)(1),
+  pipeP(nsP, snP)(1),
+  pipeP(nsP, sn)(1),
+  pipeP(ns, snP)(1),
+]
+
 it('pipeP', async () => {
   const gen = generators.array(generators.tuple(
     // to check that composition is in right order '3' + '2' == '32'
