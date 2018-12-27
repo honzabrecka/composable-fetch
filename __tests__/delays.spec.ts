@@ -1,12 +1,12 @@
-import { delays } from '../index'
+import { Delay, delays } from '../index'
 
 jest.useFakeTimers()
 
-const runWithAssert = (delay, f, expected) => {
+const runWithAssert = (delay: Delay, f: jest.Mock, expected: number[]) => {
   jest.clearAllMocks()
-  expected.forEach((_, i) => delay(i + 1))
-  expected.forEach((v, i) => expect(f.mock.calls[i][0]).toBe(v))
-  expected.forEach((v, i) => expect((setTimeout as any).mock.calls[i][1]).toBe(v))
+  expected.forEach((_: any, i: number) => delay(i + 1))
+  expected.forEach((v: any, i: number) => expect(f.mock.calls[i][0]).toBe(v))
+  expected.forEach((v: any, i: number) => expect((setTimeout as any).mock.calls[i][1]).toBe(v))
 }
 
 describe('delays', () => {

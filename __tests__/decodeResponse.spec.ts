@@ -1,11 +1,15 @@
 import { composableFetch } from '../index'
 
+interface Dict<T> {
+  [key: string]: T,
+}
+
 class Headers {
   private headers: object
-  constructor(headers) {
+  constructor(headers: Dict<string>) {
     this.headers = headers
   }
-  public get(header) {
+  public get(header: string) {
     return this.headers[header]
   }
 }

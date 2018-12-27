@@ -1,6 +1,8 @@
 import { asyncForAll, generators } from 'rapid-check'
 import { delay, pipeP } from '../index'
 
+type GeneratedValue = [number, boolean, number]
+
 it('pipeP', async () => {
   const gen = generators.array(generators.tuple(
     // to check that composition is in right order '3' + '2' == '32'
@@ -11,10 +13,10 @@ it('pipeP', async () => {
     generators.choose(0, 25),
   ), 0, 20)
 
-  const prop = async (vs) => {
-    const toFn = ([n, delayed, time]) => delayed
-      ? (p) => delay(time).then((_) => p + n)
-      : (p) => p + n
+  const prop = async (vs: GeneratedValue[]) => {
+    const toFn = ([n, delayed, time]: GeneratedValue) => delayed
+      ? (p: string) => delay(time).then((_) => p + n)
+      : (p: string) => p + n
 
     const empty = 'x'
     const a = await pipeP.apply(null, vs.map(toFn))(empty)

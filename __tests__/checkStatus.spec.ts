@@ -3,7 +3,7 @@ import { composableFetch } from '../index'
 
 describe('checkStatus', () => {
   it('passes untouched res for res.status >= 200 && res.status < 400', () => {
-    const prop = (status) => {
+    const prop = (status: number) => {
       const res = { status }
       return composableFetch.checkStatus(res as any) === res
     }
@@ -12,7 +12,7 @@ describe('checkStatus', () => {
   })
 
   it('fails for res.status < 200 || res.status >= 400', () => {
-    const prop = (status) => {
+    const prop = (status: number) => {
       const res = { status }
       try {
         composableFetch.checkStatus(res as any)

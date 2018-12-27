@@ -1,6 +1,6 @@
 import { composableFetch } from '../index'
 
-const encoder = (v) => v + 'b'
+const encoder = (v: string) => v + 'b'
 
 describe('withEncodedBody', () => {
   it('does nothing when body is empty', () => {
