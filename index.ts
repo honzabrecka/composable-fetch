@@ -174,7 +174,10 @@ const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
   return res
 }
 
-const clone = (res: Response) => res.clone()
+const withClone = (res: Response) => {
+  (res as any).cloned = res.clone()
+  return res
+}
 
 const decodeResponse = (res: Response) => {
   const contentType = res.headers.get('content-type') || ''
@@ -241,7 +244,6 @@ const logFetchError = (error: Error, req: Request) => {
 
 export const composableFetch = {
   checkStatus,
-  clone,
   decodeArrayBufferResponse,
   decodeBlobResponse,
   decodeFormDataResponse,
@@ -258,4 +260,5 @@ export const composableFetch = {
   withRetry,
   withSafe204,
   withTimeout,
+  withClone,
 }

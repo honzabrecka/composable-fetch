@@ -66,7 +66,6 @@ export type BinaryFetch = (
 
 declare export var composableFetch: {
   checkStatus: (res: Response) => Response,
-  clone: (res: Response) => Response,
   decodeArrayBufferResponse: (res: Response) => Response,
   decodeBlobResponse: (res: Response) => Response,
   decodeFormDataResponse: (res: Response) => Response,
@@ -81,6 +80,7 @@ declare export var composableFetch: {
     encoder: Encoder<A, B>,
   ) => (req: Request) => Request,
   withHeader: (header: string, value: string) => (req: Request) => Request,
+  withClone: (res: Response) => Response,
   withCredentials: (value: 'omit' | 'same-origin' | 'include') => (req: Request) => Request,
   withRetry: (
     max: number,
