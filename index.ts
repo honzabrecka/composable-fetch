@@ -229,16 +229,32 @@ const checkStatus = (res: Response) => {
   return res
 }
 
-const logFetchError = (error: Error, req: Request) => {
-  const { id, message } = (error as any)
-  console.log('>>> [fetch error]:', message)
-  console.log(req)
+const formatError = async (error: Error, x: string = 'Fetch error') => {
+  let formatted = ''
+  const append = (line: string, empty: boolean = false) => {
+    const n = empty ? '\n' : ''
+    formatted += n + line + '\n' + n
+  }
+  const { message, id, errors, res } = (error as any)
 
-  if (id === errorIds.RetryError)
-    console.log((error as any).errors)
-  if (id === errorIds.DecodeResponseError || id === errorIds.InvalidStatusCodeError)
-    console.log((error as any).res.data)
+  append(x + (id ? ` [${id}]: ` : ': ') + message)
 
+  if (id === errorIds.RetryError) {
+    const awaitingErrors = errors.map((error: any, i: number) =>
+      formatError(error, `retry: [${i}]`))
+    const formattedErrors = await Promise.all(awaitingErrors)
+    append(formattedErrors.join(''), true)
+  } else if (id === errorIds.DecodeResponseError || id === errorIds.InvalidStatusCodeError)
+    if (res.data)
+      append(res.data, true)
+    else if (res.cloned)
+      append(await res.cloned.text(), true)
+
+  return formatted
+}
+
+const logError = (log: Function = console.error.bind(console)) => async (error: Error) => {
+  log(await formatError(error))
   throw error
 }
 
@@ -251,7 +267,7 @@ export const composableFetch = {
   decodeResponse,
   decodeTextResponse,
   fetch1,
-  logFetchError,
+  logError,
   retryable,
   withBaseUrl,
   withEncodedBody,

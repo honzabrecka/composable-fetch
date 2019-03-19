@@ -73,7 +73,7 @@ declare export var composableFetch: {
   decodeResponse: (res: Response) => Response,
   decodeTextResponse: (res: Response) => Response,
   fetch1: (fetch: BinaryFetch) => UnaryFetch,
-  logFetchError: (error: Error, req: Request) => void,
+  logError: (log: Function) => (error: Error) => Promise<void>,
   retryable: (fetch: UnaryFetch) => (req: Request) => RetryableFetch,
   withBaseUrl: (baseUrl: string) => (req: Request) => Request,
   withEncodedBody: <A, B>(
