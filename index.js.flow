@@ -66,12 +66,12 @@ export type BinaryFetch = (
 
 declare export var composableFetch: {
   checkStatus: (res: Response) => Response,
-  decodeArrayBufferResponse: (res: Response) => Response,
-  decodeBlobResponse: (res: Response) => Response,
-  decodeFormDataResponse: (res: Response) => Response,
-  decodeJSONResponse: (res: Response) => Response,
-  decodeResponse: (res: Response) => Response,
-  decodeTextResponse: (res: Response) => Response,
+  decodeArrayBufferResponse: (res: Response) => Promise<Response>,
+  decodeBlobResponse: (res: Response) => Promise<Response>,
+  decodeFormDataResponse: (res: Response) => Promise<Response>,
+  decodeJSONResponse: (res: Response) => Promise<Response>,
+  decodeResponse: (res: Response) => Promise<Response>,
+  decodeTextResponse: (res: Response) => Promise<Response>,
   fetch1: (fetch: BinaryFetch) => UnaryFetch,
   logError: (log: Function) => (error: Error) => Promise<void>,
   retryable: (fetch: UnaryFetch) => (req: Request) => RetryableFetch,
