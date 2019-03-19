@@ -45,7 +45,7 @@ Performs left-to-right function composition. Each function in composition must b
 
 ## tryCatchP
 
-`tryCatchP` takes two functions, an async tryer and a catcher. The returned function evaluates the tryer; if it does not throw, it simply returns the result. If the tryer does throw, the returned function evaluates the catcher function and returns its result.
+`tryCatchP` takes two functions, an async trier and an async catcher. The returned function evaluates the trier; if it does not throw, it simply returns the result. If it does throw, the catcher function is evaluated and result is returned. See [error handling & logging](#error-handling--logging) section.
 
 ## fetch
 
@@ -86,14 +86,14 @@ composableFetch.withRetry(6, delays.limited(3, delays.linear()))
 
 Retry is often used together with `composableFetch.timeout`. Please note that when the timeout is reached, the fetch request is not killed. In other words request will always finish.
 
-If you're dealing with a legacy API which may or may not successfully respond, then the following pattern may be used, thanks to composability:
+Following pattern may be used in case you want retry when API responds with any bad status code (thanks to composability):
 
 ```js
 const fetchJSON = pipeP(
   // ...
   composableFetch.retryable(pipeP(
     composableFetch.fetch1(fetch),
-    composableFetch.checkStatus// when this check fails => do retry
+    composableFetch.checkStatus// when this check fails => retry
   )),
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(10),
@@ -103,21 +103,24 @@ const fetchJSON = pipeP(
 
 ## Error handling & logging
 
-To log all failed requests (any reason):
+To pretty print all failed requests (any reason):
 
 ```js
 const { composableFetch, pipeP, tryCatchP } = require('composable-fetch')
 
 const fetchJSON: tryCatchP(
   pipeP(...),
-  composableFetch.logFetchError,
+  composableFetch.logError(), // to console.error by default
 )
 ```
 
 In case you are interested in details of all requests made by your application, you can add simple `tap` function which performs desired side effect:
 
 ```js
-const tap = (f) => (v) => { f(v); return v }
+const tap = (f) => (v) => {
+  f(v)
+  return v
+}
 
 const fetchJSON = pipeP(
   // ...
@@ -127,5 +130,25 @@ const fetchJSON = pipeP(
   composableFetch.retryable(composableFetch.fetch1(fetch)),
   composableFetch.withTimeout(1000),
   // ...
+)
+```
+
+The `fetch` API has one major "limitation". The response body can be read just once. It's good and effective, but sometimes you deal with an API that returns HTML encoded reponse even though you asked for JSON encoded one. Therefore there's `withClone` function that gives you second chance:
+
+```js
+const logError = async (error: any) => {
+  if (error.res && error.res.cloned)
+    console.log(await error.res.cloned.text()) // second read
+}
+
+const fetchJSON = tryCatchP(
+  pipeP(
+    // ...
+    composableFetch.withRetry(10),
+    composableFetch.withClone,
+    composableFetch.decodeJSONResponse, // this will fail for any non application/json response
+    // ...
+  ),
+  logError
 )
 ```
