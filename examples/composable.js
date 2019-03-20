@@ -10,6 +10,7 @@ const fetch = tryCatchP(
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
+  composableFetch.withClone,
   composableFetch.checkStatus,
 )
 
@@ -56,7 +57,7 @@ const fetchTransit = tryCatchP(
     fetch,
     transitRes,
   ),
-  composableFetch.logFetchError,
+  composableFetch.logError,
 )
 
 module.exports = {
