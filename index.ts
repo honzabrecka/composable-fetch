@@ -57,7 +57,7 @@ export const tryCatchP = <A, B>(
   try {
     return await trier(value)
   } catch (err) {
-    return catcher(err, value)
+    return await catcher(err, value)
   }
 }
 

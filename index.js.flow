@@ -96,5 +96,5 @@ declare export var pipeP: <A, B>(...fns: Function[]) => UnaryFnP<A, B>
 
 declare export var tryCatchP: <A, B>(
   trier: (value: A) => Promise<B>,
-  catcher: (err: Error, value: A) => B,
+  catcher: (err: Error, value: A) => Promise<B>,
 ) => UnaryFnP<A, B>
