@@ -3,7 +3,7 @@ import { tryCatchP } from '../index'
 const id = <T>(a: T): Promise<T> => Promise.resolve(a)
 const fail = (a: string) => Promise.reject(new Error('error-' + a))
 
-describe('tryCatchP', async () => {
+describe('tryCatchP', () => {
   it('acts as identity when trier doesn\'t throw', async () => {
     const catcher = jest.fn()
     const result = await tryCatchP(id, catcher)('a')

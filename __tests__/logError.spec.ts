@@ -11,7 +11,7 @@ const assert = async (error: any, output: string) => {
   }
 }
 
-describe('logError', async () => {
+describe('logError', () => {
   it('Non-fetch error', async () => {
     const error = new TypeError('whatever')
     const output = 'Fetch error: whatever\n'

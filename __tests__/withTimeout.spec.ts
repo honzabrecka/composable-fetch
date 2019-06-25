@@ -7,11 +7,19 @@ describe('withTimeout', () => {
       fail()
     } catch (e) {
       expect(e).toBeInstanceOf(Error)
-      expect(e.id).toBe('TimeoutError')
     }
   })
 
   it('does not fail when promise is resolved in timeout', () => {
     return composableFetch.withTimeout(100)((): any => delay(10))()
+  })
+
+  it('passes timeout value in error when promise fails', async () => {
+    try {
+      await composableFetch.withTimeout(100)((): any => { throw Error('Fail') })()
+      fail()
+    } catch (e) {
+      expect(e).toBeInstanceOf(Error)
+    }
   })
 })

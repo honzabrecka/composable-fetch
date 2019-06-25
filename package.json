@@ -10,17 +10,17 @@
   "author": "jan.brecka@gmail.com",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^23.3.10",
-    "@types/node": "^10.12.18",
-    "@types/node-fetch": "^2.1.4",
-    "flow-bin": "^0.79.1",
-    "isomorphic-fetch": "^2.2.1",
-    "jest": "^23.6.0",
-    "rapid-check": "^0.2.0",
+    "@types/isomorphic-fetch": "^0.0.35",
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.0.10",
+    "@types/node-fetch": "^2.3.7",
+    "flow-bin": "^0.101.1",
+    "jest": "^24.8.0",
+    "rapid-check": "^0.3.0",
     "transit-js": "^0.8.861",
-    "ts-jest": "^23.10.5",
-    "tslint": "^5.12.0",
-    "typescript": "^3.2.2"
+    "ts-jest": "^24.0.2",
+    "tslint": "^5.18.0",
+    "typescript": "^3.5.2"
   },
   "scripts": {
     "tsc": "tsc",
@@ -30,17 +30,14 @@
     "build": "yarn tsc && yarn flow:copy"
   },
   "jest": {
-    "transform": {
-      "^.+\\.tsx?$": "ts-jest"
-    },
-    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
-    "moduleFileExtensions": [
-      "ts",
-      "tsx",
-      "js",
-      "jsx",
-      "json",
-      "node"
-    ]
+    "preset": "ts-jest",
+    "globals": {
+      "ts-jest": {
+        "tsConfig": "tsconfig.json"
+      }
+    }
+  },
+  "dependencies": {
+    "isomorphic-fetch": "^2.2.1"
   }
 }

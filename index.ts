@@ -1,6 +1,4 @@
-const isPromise = (v: any): v is Promise<any> => !!v
-  && (typeof v === 'object' || typeof v === 'function')
-  && typeof v.then === 'function'
+import * as $fetch from 'isomorphic-fetch'
 
 export function pipeP<T>(): (v: T) => Promise<T>
 export function pipeP<T1, T2>(f1: (v: T1) => T2 | Promise<T2>): (v: T1) => Promise<T2>
@@ -34,17 +32,12 @@ export function pipeP<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T1
 export function pipeP<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17, T18, T19, T20, T21, T22, T23, T24, T25, T26, T27, T28, T29, T30>(f1: (v: T1) => T2 | Promise<T2>, f2: (v: T2) => T3 | Promise<T3>, f3: (v: T3) => T4 | Promise<T4>, f4: (v: T4) => T5 | Promise<T5>, f5: (v: T5) => T6 | Promise<T6>, f6: (v: T6) => T7 | Promise<T7>, f7: (v: T7) => T8 | Promise<T8>, f8: (v: T8) => T9 | Promise<T9>, f9: (v: T9) => T10 | Promise<T10>, f10: (v: T10) => T11 | Promise<T11>, f11: (v: T11) => T12 | Promise<T12>, f12: (v: T12) => T13 | Promise<T13>, f13: (v: T13) => T14 | Promise<T14>, f14: (v: T14) => T15 | Promise<T15>, f15: (v: T15) => T16 | Promise<T16>, f16: (v: T16) => T17 | Promise<T17>, f17: (v: T17) => T18 | Promise<T18>, f18: (v: T18) => T19 | Promise<T19>, f19: (v: T19) => T20 | Promise<T20>, f20: (v: T20) => T21 | Promise<T21>, f21: (v: T21) => T22 | Promise<T22>, f22: (v: T22) => T23 | Promise<T23>, f23: (v: T23) => T24 | Promise<T24>, f24: (v: T24) => T25 | Promise<T25>, f25: (v: T25) => T26 | Promise<T26>, f26: (v: T26) => T27 | Promise<T27>, f27: (v: T27) => T28 | Promise<T28>, f28: (v: T28) => T29 | Promise<T29>, f29: (v: T29) => T30 | Promise<T30>): (v: T1) => Promise<T30>
 export function pipeP(...fns: Function[]) {
   return (value: any) => new Promise((resolve, reject) => {
-    (function run([f, ...fns], value: any) {
-      if (!f)
-        resolve(value)
-      else {
-        value = f(value)
-        if (isPromise(value))
-          value
-            .then((value) => run(fns, value))
-            .catch(reject)
-        else
-          run(fns, value)
+    (async function run([f, ...fns], value: any) {
+      try {
+        if (f === undefined) resolve(value)
+        else run(fns, await f(value))
+      } catch (e) {
+        reject(e)
       }
     })(fns, value)
   })
@@ -52,7 +45,7 @@ export function pipeP(...fns: Function[]) {
 
 export const tryCatchP = <A, B>(
   trier: (value: A) => Promise<B>,
-  catcher: (err: Error, value: A) => B,
+  catcher: (err: Error, value: A) => Promise<B>,
 ) => async (value: A) => {
   try {
     return await trier(value)
@@ -69,15 +62,15 @@ const newError = (id: string, message: string, res?: Response) => {
 }
 
 export const errorIds = {
-  TimeoutError: 'TimeoutError',
   RetryError: 'RetryError',
+  TimeoutError: 'TimeoutError',
   DecodeResponseError: 'DecodeResponseError',
   InvalidStatusCodeError: 'InvalidStatusCodeError',
 }
 
 export type Delay = (t: number) => Promise<void>
 
-export const delay: Delay = (time) => new Promise((resolve, _) => {
+export const delay: Delay = (time) => new Promise((resolve) => {
   setTimeout(() => resolve(), time)
 })
 
@@ -93,12 +86,12 @@ const tapAndDelay = (f: Function, time: number) => {
 const nothing = (t: number): any => undefined
 
 export const delays = {
+  delay,
   tapAndDelay,
-  nothing,
-  constant: (time = 1000, f = nothing): Delay => (i: number) => tapAndDelay(f, time),
-  exponential: (time = 1000, f = nothing): Delay => (i: number) => tapAndDelay(f, i * i * time),
-  limited: (max: number, delay: Delay) => (i: number) => delay(((i - 1) % max) + 1),
-  linear: (time = 1000, f = nothing): Delay => (i: number) => tapAndDelay(f, i * time),
+  constant: (time = 1000, f = nothing): Delay => (i) => tapAndDelay(f, time),
+  exponential: (time = 1000, f = nothing): Delay => (i) => tapAndDelay(f, i * i * time),
+  limited: (max: number, delay: Delay): Delay => (i) => delay(((i - 1) % max) + 1),
+  linear: (time = 1000, f = nothing): Delay => (i) => tapAndDelay(f, i * time),
 }
 
 export interface Request extends RequestInit {
@@ -125,7 +118,7 @@ const withHeader = (header: string, value: string) => (req: Request) => {
   return req
 }
 
-const withCredentials = (value: 'omit' | 'same-origin' | 'include') => (req: Request) => {
+const withCredentials = (value: RequestCredentials) => (req: Request) => {
   req.credentials = value
   return req
 }
@@ -146,30 +139,78 @@ const fetch1 = (fetch: BinaryFetch): UnaryFetch => (req: Request) => fetch(req.u
 
 export type RetryableFetch = () => Promise<Response>
 
-const retryable = (fetch: UnaryFetch) => (req: Request): RetryableFetch => () => fetch(req)
+const retryable = (fetch: UnaryFetch) => (req: Request): RetryableFetch => async () => {
+  const retryableErrors = new Set([
+    'ETIMEDOUT', // One of the timeout limits were reached.
+    'ECONNRESET', // Connection was forcibly closed by a peer.
+    'EADDRINUSE', // Could not bind to any free port.
+    'ECONNREFUSED', // Connection was refused by the server.
+    'EPIPE', // The remote side of the stream being written has been closed.
+    'ENOTFOUND', // Couldn't resolve the hostname to an IP address.
+    'ENETUNREACH', // No internet connection.
+    'EAI_AGAIN', // DNS lookup timed out.
+  ])
+  const retryableStatuses = new Set([408, 413, 429, 500, 502, 503, 504])
+  const throwError = (res?: Response) => {
+    throw newError(errorIds.RetryError, 'Retry error', res)
+  }
+
+  try {
+    const res = await fetch(req)
+    if (retryableStatuses.has(res.status)) throwError(res)
+    return res
+  } catch (error) {
+    if (retryableErrors.has((error as any).code)) throwError()
+    throw error
+  }
+}
 
 const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch =>
-  () => Promise.race([fetch(), delayedFail(timeout)])
+  () => Promise.race([fetch(), delayedFail(timeout)])
 
-const withRetry = (max: number = 5, delay: Delay = delays.linear()) => (fetch: RetryableFetch): Promise<Response> => {
-  return new Promise((resolve, reject) => {
-    (function run(i: number, errors: Error[]) {
-      if (i === max + 1) {
-        const error = newError(errorIds.RetryError, 'Retry failed');
-        (error as any).errors = errors
-        reject(error)
-      } else
-        fetch()
-          .then(resolve)
-          .catch((error) => delay(i).then(() => run(i + 1, [...errors, error])))
-    })(1, [])
-  })
+const decodeRetryAfterHeaderValue = (response?: Response): number | void => {
+  const value = response && response.headers.get('retry-after')
+  if (typeof value === 'string') return new Date(value).getTime() - Date.now()
+  if (typeof value === 'number') return value
+  return undefined
 }
+
+export interface RetryOptions {
+  max?: number,
+  delay?: Delay,
+  maxTimeout?: number,
+}
+
+const withRetry = ({
+  max = 5,
+  delay = delays.linear(),
+  maxTimeout = Number.MAX_VALUE,
+}: RetryOptions = {}) =>
+  (fetch: RetryableFetch): Promise<Response> => {
+    return new Promise((resolve, reject) => {
+      (async function run(i: number) {
+        if (i === max + 1)
+          reject(newError(errorIds.RetryError, 'Retry failed'))
+        else
+          try {
+            resolve(await fetch())
+          } catch (error) {
+            const retryAfter = decodeRetryAfterHeaderValue(error.res)
+            if (retryAfter > maxTimeout)
+              reject(newError(errorIds.RetryError, 'Retry-after is higher than maxTimeout'))
+            else {
+              await (retryAfter === undefined ? delay(i) : delays.delay(retryAfter))
+              run(i + 1)
+            }
+          }
+      })(1)
+    })
+  }
 
 const withSafe204 = (text: string = '', json: any = {}) => (res: Response) => {
   if (res.status === 204) {
-    res.text = () => Promise.resolve(text)
-    res.json = () => Promise.resolve(json)
+    res.text = async () => text
+    res.json = async () => json
   }
   return res
 }
@@ -253,10 +294,15 @@ const formatError = async (error: Error, x: string = 'Fetch error') => {
   return formatted
 }
 
-const logError = (log: Function = console.error.bind(console)) => async (error: Error) => {
+export type Log = (message: string) => any
+
+const logError = (log: Log = console.error.bind(console)) => async (error: Error) => {
   log(await formatError(error))
   throw error
 }
+
+const fetch = fetch1($fetch)
+const retryableFetch = retryable(fetch)
 
 export const composableFetch = {
   checkStatus,
@@ -266,9 +312,11 @@ export const composableFetch = {
   decodeJSONResponse,
   decodeResponse,
   decodeTextResponse,
+  fetch,
   fetch1,
   logError,
   retryable,
+  retryableFetch,
   withBaseUrl,
   withEncodedBody,
   withHeader,
@@ -277,4 +325,22 @@ export const composableFetch = {
   withSafe204,
   withTimeout,
   withClone,
+  decodeRetryAfterHeaderValue,
+  json: (options?: RetryOptions) => pipeP(
+    withHeader('Content-Type', 'application/json'),
+    withHeader('Accept', 'application/json'),
+    withEncodedBody(JSON.stringify),
+    retryableFetch,
+    withRetry(options),
+    withSafe204(),
+    decodeJSONResponse,
+    checkStatus,
+  ),
+  text: (options?: RetryOptions) => pipeP(
+    retryableFetch,
+    withRetry(options),
+    withSafe204(),
+    decodeTextResponse,
+    checkStatus,
+  ),
 }

@@ -64,32 +64,40 @@ export type BinaryFetch = (
   init: any,
 ) => Promise<Response>
 
+export type RetryOptions = {
+  max?: number,
+  delay?: Delay,
+  maxTimeout?: number,
+}
+
 declare export var composableFetch: {
   checkStatus: (res: Response) => Response,
-  decodeArrayBufferResponse: (res: Response) => Promise<Response>,
-  decodeBlobResponse: (res: Response) => Promise<Response>,
-  decodeFormDataResponse: (res: Response) => Promise<Response>,
-  decodeJSONResponse: (res: Response) => Promise<Response>,
-  decodeResponse: (res: Response) => Promise<Response>,
-  decodeTextResponse: (res: Response) => Promise<Response>,
+  decodeArrayBufferResponse: (res: Response) => Response,
+  decodeBlobResponse: (res: Response) => Response,
+  decodeFormDataResponse: (res: Response) => Response,
+  decodeJSONResponse: (res: Response) => Response,
+  decodeResponse: (res: Response) => Response,
+  decodeTextResponse: (res: Response) => Response,
+  fetch: UnaryFetch,
   fetch1: (fetch: BinaryFetch) => UnaryFetch,
   logError: (log: Function) => (error: Error) => Promise<void>,
   retryable: (fetch: UnaryFetch) => (req: Request) => RetryableFetch,
+  retryableFetch: (req: Request) => RetryableFetch,
   withBaseUrl: (baseUrl: string) => (req: Request) => Request,
   withEncodedBody: <A, B>(
     encoder: Encoder<A, B>,
   ) => (req: Request) => Request,
   withHeader: (header: string, value: string) => (req: Request) => Request,
-  withClone: (res: Response) => Response,
   withCredentials: (value: 'omit' | 'same-origin' | 'include') => (req: Request) => Request,
-  withRetry: (
-    max: number,
-    delay: Delay,
-  ) => (fetch: RetryableFetch) => Promise<Response>,
+  withRetry: (options?: RetryOptions) => (fetch: RetryableFetch) => Promise<Response>,
   withSafe204: (text?: string, json?: any) => (res: Response) => Response,
   withTimeout: (
     timeout: number,
   ) => (fetch: RetryableFetch) => RetryableFetch,
+  withClone: (res: Response) => Response,
+  decodeRetryAfterHeaderValue: Function,
+  json: (options?: RetryOptions) => Promise<Response>,
+  text: (options?: RetryOptions) => Promise<Response>,
 }
 
 declare export var pipeP: <A, B>(...fns: Function[]) => UnaryFnP<A, B>
