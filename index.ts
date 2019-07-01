@@ -113,9 +113,9 @@ const withBaseUrl = (baseUrl: string) => (req: Request) => {
 const withHeader = (header: string, value: string) => (req: Request) => {
   if (req.headers && req.headers instanceof Headers)
     if (req.headers.has(header))
-      req.headers.set(header, value)
-    else
       req.headers.append(header, value)
+    else
+      req.headers.set(header, value)
   else {
     // Hack for backward compatibility
     (req.headers as any) = req.headers || {};
