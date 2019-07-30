@@ -50,4 +50,12 @@ describe('decodeResponse', () => {
     const decodedRes = await composableFetch.decodeResponse(res as any)
     expect((decodedRes as any).data).toBe('foo')
   })
+
+  it('acts as identity when no pattern matches', async () => {
+    const res = {
+      headers: new Headers({}),
+    }
+    const decodedRes = await composableFetch.decodeResponse(res as any)
+    expect((decodedRes as any)).toBe(res)
+  })
 })

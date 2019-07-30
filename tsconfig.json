@@ -15,14 +15,12 @@
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
     "experimentalDecorators": true,
-    "typeRoots": ["node_modules/@types", "./typings"]
+    "typeRoots": ["node_modules/@types", "types"]
   },
   "include": [
     "index.ts"
   ],
   "exclude": [
-    "node_modules",
-    "dist",
-    "**/*.spec*"
+    "dist"
   ]
 }

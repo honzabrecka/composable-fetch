@@ -13,8 +13,6 @@ npm install composable-fetch
 
 ## Example
 
-To consume JSON APIs:
-
 ```js
 const { composableFetch, pipeP } = require('composable-fetch')
 
@@ -25,7 +23,7 @@ const fetchJSON = pipeP(
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody(JSON.stringify),
-  composableFetch.retryable(composableFetch.fetch1(fetch)),
+  composableFetch.retryableFetch,
   composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
@@ -66,7 +64,7 @@ or use `composableFetch.fetch1` function which does this for you.
 
 ## Retries
 
-When using `composableFetch.withRetry`, make sure that `fetch` is wrapped with `composableFetch.retryable`.
+When using `composableFetch.withRetry`, make sure that you are using `retryableFetch` instead of `fetch`.
 
 ```js
 const { composableFetch, delays } = require('composable-fetch')
@@ -92,7 +90,7 @@ Following pattern may be used in case you want retry when API responds with any 
 const fetchJSON = pipeP(
   // ...
   composableFetch.retryable(pipeP(
-    composableFetch.fetch1(fetch),
+    composableFetch.fetch,
     composableFetch.checkStatus// when this check fails => retry
   )),
   composableFetch.withTimeout(1000),
@@ -127,7 +125,7 @@ const fetchJSON = pipeP(
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody(JSON.stringify),
   tap(log),
-  composableFetch.retryable(composableFetch.fetch1(fetch)),
+  composableFetch.retryableFetch,
   composableFetch.withTimeout(1000),
   // ...
 )

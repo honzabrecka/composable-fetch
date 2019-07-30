@@ -2,16 +2,16 @@ import { forAll, generators } from 'rapid-check'
 import { composableFetch } from '../index'
 
 describe('checkStatus', () => {
-  it('passes untouched res for res.status >= 200 && res.status < 400', () => {
+  it('passes untouched res for res.status >= 200 && res.status < 400', async () => {
     const prop = (status: number) => {
       const res = { status }
       return composableFetch.checkStatus(res as any) === res
     }
-    const [result] = forAll(generators.choose(200, 399), prop)
-    expect(result).toBe(true)
+    const result = await forAll(generators.choose(200, 399), prop)
+    expect(result).toMatchObject({ success: true })
   })
 
-  it('fails for res.status < 200 || res.status >= 400', () => {
+  it('fails for res.status < 200 || res.status >= 400', async () => {
     const prop = (status: number) => {
       const res = { status }
       try {
@@ -21,11 +21,12 @@ describe('checkStatus', () => {
         return true
       }
     }
-    const [result] = forAll(generators.oneOf(
+    const gen = generators.oneOf(
       generators.choose(100, 199),
       generators.choose(400, 599),
-    ), prop)
-    expect(result).toBe(true)
+    )
+    const result = await forAll(gen, prop)
+    expect(result).toMatchObject({ success: true })
   })
 
   it('checks that error contains res', () => {

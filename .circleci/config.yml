@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/w
     docker:
-      - image: circleci/node:8.4.0
+      - image: circleci/node:10
     steps:
       - checkout
       - restore_cache:
@@ -14,6 +14,6 @@ jobs:
           paths:
             - ./node_modules
       - run: yarn tslint
-      - run: yarn jest
+      - run: yarn jest --runInBand
       - run: yarn flow check
       - run: yarn build

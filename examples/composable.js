@@ -1,21 +1,22 @@
 const { composableFetch, pipeP, tryCatchP } = require('../dist/index')
-const $fetch = require('isomorphic-fetch')
 const transit = require('transit-js')
+
 const log = console.log.bind(console)
 const writer = transit.writer('json')
 const reader = transit.reader('json')
 
-const fetch = tryCatchP(
-  composableFetch.retryable(composableFetch.fetch1($fetch)),
-  composableFetch.withTimeout(1000),
+const fetch = pipeP(
+  composableFetch.retryableFetch,
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
   composableFetch.withClone,
   composableFetch.checkStatus,
 )
 
+const data = ({ data }) => data
+
 const JSONReq = pipeP(
-  composableFetch.withBaseUrl('https://honzabrecka.com/api'),
+  composableFetch.withBaseUrl('https://example.com/api'),
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody(JSON.stringify),
@@ -28,8 +29,9 @@ const fetchJSON = tryCatchP(
     JSONReq,
     fetch,
     JSONRes,
+    data,
   ),
-  composableFetch.logFetchError,
+  composableFetch.logError(),
 )
 
 const encodeTransit = (v) => writer.write(v)
@@ -56,8 +58,9 @@ const fetchTransit = tryCatchP(
     transitReq,
     fetch,
     transitRes,
+    data,
   ),
-  composableFetch.logError,
+  composableFetch.logError(),
 )
 
 module.exports = {
@@ -71,6 +74,8 @@ module.exports = {
 // usage:
 //
 
-fetchJSON({ url: '/status' }).then(log).catch(log)
+const ignore = () => {}
+
+fetchJSON({ url: '/status' }).then(log).catch(ignore)
 // or
-fetchTransit({ url: '/', method: 'post', body: ['foo', 'bar'] }).then(log).catch(log)
+fetchTransit({ url: '/', method: 'post', body: ['foo', 'bar'] }).then(log).catch(ignore)
