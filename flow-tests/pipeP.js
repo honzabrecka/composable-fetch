@@ -1,6 +1,6 @@
 // @flow
 
-import { pipeP } from './index'
+import { pipeP } from '../index'
 
 const a = (x: number): string => x + ''
 const b = (x: string): number => parseInt(x)
