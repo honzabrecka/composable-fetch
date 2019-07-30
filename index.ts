@@ -165,6 +165,9 @@ const retryable = (fetch: UnaryFetch) => (req: Request): RetryableFetch => async
   }
 }
 
+/**
+ * @deprecated 6.0.0
+ */
 const withTimeout = (timeout: number) => (fetch: RetryableFetch): RetryableFetch =>
   () => Promise.race([fetch(), delayedFail(timeout)])
 
