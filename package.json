@@ -1,41 +1,44 @@
 {
   "name": "composable-fetch",
   "version": "5.0.1",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
   "repository": {
     "type": "git",
     "url": "git@github.com:honzabrecka/composable-fetch.git"
   },
   "author": "jan.brecka@gmail.com",
   "license": "MIT",
+  "main": "dist/index.js",
+  "module": "dist/composable-fetch-next.esm.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdx build && yarn flow:copy",
+    "test": "tsdx test",
+    "flow:copy": "cp index.js.flow dist",
+    "tslint": "tslint -c tslint.json '{src/**/*.ts,test/**/*.ts}' -t verbose"
+  },
+  "peerDependencies": {},
+  "prettier": {
+    "printWidth": 80,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
   "devDependencies": {
     "@types/isomorphic-fetch": "^0.0.35",
-    "@types/jest": "^24.0.15",
-    "@types/node": "^12.0.10",
-    "@types/node-fetch": "^2.3.7",
-    "flow-bin": "^0.101.1",
-    "jest": "^24.8.0",
+    "@types/jest": "^24.0.16",
+    "flow-bin": "^0.104.0",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
     "rapid-check": "^0.3.0",
     "transit-js": "^0.8.861",
-    "ts-jest": "^24.0.2",
+    "tsdx": "^0.7.2",
+    "tslib": "^1.10.0",
     "tslint": "^5.18.0",
-    "typescript": "^3.5.2"
-  },
-  "scripts": {
-    "tsc": "tsc",
-    "jest": "jest",
-    "tslint": "tslint -c tslint.json '{index.ts,__tests__/**/*.ts}' -t verbose",
-    "flow:copy": "cp index.js.flow dist",
-    "build": "yarn tsc && yarn flow:copy"
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "globals": {
-      "ts-jest": {
-        "tsConfig": "tsconfig.json"
-      }
-    }
+    "tslint-config-prettier": "^1.18.0",
+    "typescript": "^3.5.3"
   },
   "dependencies": {
     "isomorphic-fetch": "^2.2.1"

@@ -1,14 +1,14 @@
-import { composableFetch } from '../index'
+import { withCredentials } from '../src/index'
 
 describe('withCredentials', () => {
-  it('assocs credentials property', () => {
+  it('assocs credentials property', () => {
     const req = {
       body: 'bar',
       headers: {},
       method: 'post',
       url: 'foo',
     }
-    expect(composableFetch.withCredentials('same-origin')(req)).toEqual({
+    expect(withCredentials('same-origin')(req)).toEqual({
       body: 'bar',
       headers: {},
       method: 'post',

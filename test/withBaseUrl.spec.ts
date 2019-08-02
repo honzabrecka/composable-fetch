@@ -1,14 +1,14 @@
-import { composableFetch } from '../index'
+import { withBaseUrl } from '../src/index'
 
 describe('withBaseUrl', () => {
-  it('prepends baseUrl before req.url', () => {
+  it('prepends baseUrl before req.url', () => {
     const req = {
       body: 'bar',
       headers: {},
       method: 'post',
       url: 'foo',
     }
-    expect(composableFetch.withBaseUrl('http://example.com/')(req)).toEqual({
+    expect(withBaseUrl('http://example.com/')(req)).toEqual({
       body: 'bar',
       headers: {},
       method: 'post',

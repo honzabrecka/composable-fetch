@@ -1,18 +1,29 @@
 // @flow
 
-const { composableFetch, pipeP } = require('../index')
+const {
+  pipeP,
+  withBaseUrl,
+  withHeader,
+  withEncodedBody,
+  retryableFetch,
+  withTimeout,
+  withRetry,
+  withSafe204,
+  decodeJSONResponse,
+  checkStatus,
+} = require('../index')
 
 const fetch = pipeP(
-  composableFetch.withBaseUrl('https://example.com/api'),
-  composableFetch.withHeader('Content-Type', 'application/json'),
-  composableFetch.withHeader('Accept', 'application/json'),
-  composableFetch.withEncodedBody(JSON.stringify),
-  composableFetch.retryableFetch,
-  composableFetch.withTimeout(1000),
-  composableFetch.withRetry(),
-  composableFetch.withSafe204(),
-  composableFetch.decodeJSONResponse,
-  composableFetch.checkStatus
+  withBaseUrl('https://example.com/api'),
+  withHeader('Content-Type', 'application/json'),
+  withHeader('Accept', 'application/json'),
+  withEncodedBody(JSON.stringify),
+  retryableFetch,
+  withTimeout(1000),
+  withRetry(),
+  withSafe204(),
+  decodeJSONResponse,
+  checkStatus,
 )
 
 fetch({ url: '/api/foo' })

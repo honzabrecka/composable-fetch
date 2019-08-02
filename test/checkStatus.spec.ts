@@ -1,21 +1,21 @@
 import { forAll, generators } from 'rapid-check'
-import { composableFetch } from '../index'
+import { checkStatus } from '../src/index'
 
-describe('checkStatus', () => {
-  it('passes untouched res for res.status >= 200 && res.status < 400', async () => {
+describe('checkStatus', () => {
+  it('passes untouched res for res.status >= 200 && res.status < 400', async () => {
     const prop = (status: number) => {
       const res = { status }
-      return composableFetch.checkStatus(res as any) === res
+      return checkStatus(res as any) === res
     }
     const result = await forAll(generators.choose(200, 399), prop)
     expect(result).toMatchObject({ success: true })
   })
 
-  it('fails for res.status < 200 || res.status >= 400', async () => {
+  it('fails for res.status < 200 || res.status >= 400', async () => {
     const prop = (status: number) => {
       const res = { status }
       try {
-        composableFetch.checkStatus(res as any)
+        checkStatus(res as any)
         return false
       } catch (_) {
         return true
@@ -29,10 +29,10 @@ describe('checkStatus', () => {
     expect(result).toMatchObject({ success: true })
   })
 
-  it('checks that error contains res', () => {
+  it('checks that error contains res', () => {
     const res = { status: 100 }
     try {
-      composableFetch.checkStatus(res as any)
+      checkStatus(res as any)
       fail()
     } catch (e) {
       expect(e).toBeInstanceOf(Error)

@@ -1,9 +1,9 @@
-import { composableFetch } from '../index'
+import { logError } from '../src/index'
 
 const assert = async (error: any, output: string) => {
   const log = jest.fn()
   try {
-    await composableFetch.logError(log)(error)
+    await logError(log)(error)
     fail()
   } catch (e) {
     expect(log).toBeCalledWith(output)
@@ -44,7 +44,8 @@ describe('logError', () => {
     const error: any = new Error('whatever')
     error.id = 'RetryError'
     error.errors = [errorA, errorB]
-    const output = 'Fetch error [RetryError]: whatever\n\nretry: [0] [InvalidStatusCodeError]: a\n\nfoo\n\nretry: [1] [DecodeResponseError]: b\n\nbar\n\n\n\n'
+    const output =
+      'Fetch error [RetryError]: whatever\n\nretry: [0] [InvalidStatusCodeError]: a\n\nfoo\n\nretry: [1] [DecodeResponseError]: b\n\nbar\n\n\n\n'
     await assert(error, output)
   })
 })

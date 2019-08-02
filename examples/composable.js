@@ -1,4 +1,5 @@
-const { composableFetch, pipeP, tryCatchP } = require('../dist/index')
+const composableFetch = require('../dist/index')
+const { pipeP, tryCatchP } = require('../dist/index')
 const transit = require('transit-js')
 
 const log = console.log.bind(console)

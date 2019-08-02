@@ -1,11 +1,11 @@
-import { composableFetch } from '../index'
+import { withClone } from '../src/index'
 
-describe('withClone', () => {
-  it('clones itself', () => {
+describe('withClone', () => {
+  it('clones itself', () => {
     const res: any = {
       clone: jest.fn(),
     }
-    composableFetch.withClone(res)
+    withClone(res)
     expect(res).toHaveProperty('cloned')
     expect(res.clone).toHaveBeenCalledTimes(1)
   })

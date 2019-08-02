@@ -11,15 +11,43 @@ async function test() {
   await pipeP(a)(1)
   await pipeP(aP)(1)
 
-  await pipeP(a, b)(1)
-  await pipeP(aP, bP)(1)
-  await pipeP(aP, b)(1)
-  await pipeP(a, bP)(1)
+  await pipeP(
+    a,
+    b,
+  )(1)
+  await pipeP(
+    aP,
+    bP,
+  )(1)
+  await pipeP(
+    aP,
+    b,
+  )(1)
+  await pipeP(
+    a,
+    bP,
+  )(1)
 
-  await pipeP(a, b, a)(1)
-  await pipeP(aP, bP, aP)(1)
-  await pipeP(aP, b, a)(1)
-  await pipeP(a, bP, a)(1)
+  await pipeP(
+    a,
+    b,
+    a,
+  )(1)
+  await pipeP(
+    aP,
+    bP,
+    aP,
+  )(1)
+  await pipeP(
+    aP,
+    b,
+    a,
+  )(1)
+  await pipeP(
+    a,
+    bP,
+    a,
+  )(1)
 
   // should fail
   // await pipeP(b)(1)

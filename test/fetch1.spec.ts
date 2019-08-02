@@ -1,6 +1,6 @@
-import { composableFetch } from '../index'
+import { fetch1 } from '../src/index'
 
-it('fetch1', () => {
+it('fetch1', () => {
   const req = {
     body: 'bar',
     headers: {},
@@ -8,7 +8,7 @@ it('fetch1', () => {
     url: 'foo',
   }
   const fetch = jest.fn()
-  composableFetch.fetch1(fetch)(req)
+  fetch1(fetch)(req)
   expect(fetch).toBeCalledWith('foo', {
     body: 'bar',
     headers: {},
