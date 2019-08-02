@@ -1,9 +1,10 @@
 # composable-fetch [![CircleCI](https://circleci.com/gh/honzabrecka/composable-fetch/tree/master.svg?style=svg&circle-token=eefe6811545741764260a25f382c13da0d6e31a7)](https://circleci.com/gh/honzabrecka/composable-fetch/tree/master)
 
-A library that:
-
- 1. brings composition to fetch requests
- 1. solves most common tasks such as retries, timeouts, status code checking, ...
+ - Composable and extensible
+ - Just javascript and promises
+ - Brings solutions for most common cases such as status code checking, body encoding/decoding, retries & retries strategies, ...
+ - Provides functional API
+ - First class support for both TypeScript and Flow
 
 ## Installation
 
@@ -14,17 +15,16 @@ npm install composable-fetch
 ## Example
 
 ```js
-const { composableFetch, pipeP } = require('composable-fetch')
+const composableFetch = require('composable-fetch')
 
 const log = console.log.bind(console)
 
-const fetchJSON = pipeP(
+const fetchJSON = composableFetch.pipeP(
   composableFetch.withBaseUrl('https://example.com/api'),
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody(JSON.stringify),
   composableFetch.retryableFetch,
-  composableFetch.withTimeout(1000),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
   composableFetch.decodeJSONResponse,
@@ -37,78 +37,48 @@ fetchJSON({ url: '/foo', method: 'POST', body: [1, 2, 3] }).then(log).catch(log)
 
 For better overview of how composability may help take a look at `examples/composable.js` example.
 
-## pipeP
+## Overview
+
+The main concept of composable-fetch is [piping (left-to-right composition)](#pipep) - passing data through pipe of unary functions. Pipe typically has three blocks, subpipes:
+
+```
+pipe = enhance request -> fetch (with retries) -> enhance response
+```
+
+### pipeP
 
 Performs left-to-right function composition. Each function in composition must be unary. If function returns promise, than `pipeP` waits to its resolution before it calls next function in chain.
 
-## tryCatchP
-
-`tryCatchP` takes two functions, an async trier and an async catcher. The returned function evaluates the trier; if it does not throw, it simply returns the result. If it does throw, the catcher function is evaluated and result is returned. See [error handling & logging](#error-handling--logging) section.
-
 ## fetch
 
-As noted above, `pipeP` expects unary functions. But because the `window.fetch` function is binary, it's necessary to wrap it with an unary lambda:
-
-```js
-type Request = {
-  url: string,
-  method?: string,
-  headers?: object,
-  body?: any,
-}
-
-const fetch1 = (req: Request) => window.fetch(req.url, req)
-```
-
-or use `composableFetch.fetch1` function which does this for you.
+Composable-fetch comes with [isomoprhic-fetch](https://www.npmjs.com/package/isomorphic-fetch) and exposes its own (wrapped unary) `fetch`, respectively `retryableFetch` function.
 
 ## Retries
 
-When using `composableFetch.withRetry`, make sure that you are using `retryableFetch` instead of `fetch`.
-
 ```js
-const { composableFetch, delays } = require('composable-fetch')
-
-composableFetch.withRetry(3, delays.constant())
+withRetry(3, delays.constant())
 // retries after 1 sec, then again after 1 sec, then again after 1 sec
 
-composableFetch.withRetry(3, delays.linear())
+withRetry(3, delays.linear())
 // retries after 1 sec, then after 2 secs, then after 3 secs
 
-composableFetch.withRetry(3, delays.exponential())
+withRetry(3, delays.exponential())
 // retries after 1 sec, then after 4 secs, then after 9 secs
 
-composableFetch.withRetry(6, delays.limited(3, delays.linear()))
+withRetry(6, delays.limited(3, delays.linear()))
 // retries after 1 sec, then 2 secs, 3 secs, then 1 sec, 2 secs, 3 secs
 ```
 
-Retry is often used together with `composableFetch.timeout`. Please note that when the timeout is reached, the fetch request is not killed. In other words request will always finish.
-
-Following pattern may be used in case you want retry when API responds with any bad status code (thanks to composability):
-
-```js
-const fetchJSON = pipeP(
-  // ...
-  composableFetch.retryable(pipeP(
-    composableFetch.fetch,
-    composableFetch.checkStatus// when this check fails => retry
-  )),
-  composableFetch.withTimeout(1000),
-  composableFetch.withRetry(10),
-  // ...
-)
-```
+When using `withRetry`, make sure that you are using `retryableFetch` instead of `fetch`.
 
 ## Error handling & logging
 
-To pretty print all failed requests (any reason):
+To pretty print failed request (any reason):
 
 ```js
-const { composableFetch, pipeP, tryCatchP } = require('composable-fetch')
-
 const fetchJSON: tryCatchP(
-  pipeP(...),
-  composableFetch.logError(), // to console.error by default
+  pipeP(/* ... */),
+  logError(), // to console.error by default
 )
 ```
 
@@ -122,31 +92,29 @@ const tap = (f) => (v) => {
 
 const fetchJSON = pipeP(
   // ...
-  composableFetch.withHeader('Accept', 'application/json'),
-  composableFetch.withEncodedBody(JSON.stringify),
-  tap(log),
-  composableFetch.retryableFetch,
-  composableFetch.withTimeout(1000),
+  withHeader('Accept', 'application/json'),
+  withEncodedBody(JSON.stringify),
+  tap(console.log.bind(console, 'request:')),
+  fetch,
   // ...
 )
 ```
 
-The `fetch` API has one major "limitation". The response body can be read just once. It's good and effective, but sometimes you deal with an API that returns HTML encoded reponse even though you asked for JSON encoded one. Therefore there's `withClone` function that gives you second chance:
+The `fetch` API has one major "limitation" - body of the response can be read just once. For example you deal with an API that returns HTML encoded reponse even though you asked for JSON encoded one - fetch fails on DecodeResponseError. You cannot just catch this error and decode that HTML encoded response, because you already read it. In browser it typically does not matter, you have network tab with all the details, however in non-browser environment it's not that easy, therefore composable-fetch comes with `withClone` function that gives you second chance to read the response:
 
 ```js
-const logError = async (error: any) => {
-  if (error.res && error.res.cloned)
-    console.log(await error.res.cloned.text()) // second read
-}
-
 const fetchJSON = tryCatchP(
   pipeP(
     // ...
-    composableFetch.withRetry(10),
-    composableFetch.withClone,
-    composableFetch.decodeJSONResponse, // this will fail for any non application/json response
+    withRetry(),
+    withClone,
+    decodeJSONResponse, // this will fail for any non application/json response
     // ...
   ),
   logError
 )
 ```
+
+### tryCatchP
+
+`tryCatchP` takes two functions, an async trier and an async catcher. The returned function evaluates the trier; if it does not throw, it simply returns the result. If it does throw, the catcher function is evaluated and result is returned.
