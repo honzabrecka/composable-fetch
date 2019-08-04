@@ -39,15 +39,11 @@ For better overview of how composability may help take a look at `examples/compo
 
 ## Overview
 
-The main concept of composable-fetch is [piping (left-to-right composition)](#pipep) - passing data through pipe of unary functions. Pipe typically has three blocks, subpipes:
+The main concept of composable-fetch is [piping (left-to-right composition)](#pipep) - passing data through pipe of unary functions. Pipe typically has three blocks, subpipes ([see API](#api) for more details about applicable functions):
 
 ```
 pipe = enhance request -> fetch (with retries) -> enhance response
 ```
-
-### pipeP
-
-Performs left-to-right function composition. Each function in composition must be unary. If function returns promise, than `pipeP` waits to its resolution before it calls next function in chain.
 
 ## fetch
 
@@ -115,6 +111,54 @@ const fetchJSON = tryCatchP(
 )
 ```
 
+## API
+
+### pipeP
+
+Performs left-to-right function composition. Each function in composition must be unary. If function returns promise, than `pipeP` waits to its resolution before it calls next function in chain.
+
 ### tryCatchP
 
 `tryCatchP` takes two functions, an async trier and an async catcher. The returned function evaluates the trier; if it does not throw, it simply returns the result. If it does throw, the catcher function is evaluated and result is returned.
+
+### Enhance request phase
+
+```js
+withBaseUrl: (baseUrl: string) => (req: Request) => Request
+withEncodedBody: <A, B>(encoder: Encoder<A, B>) => (req: Request) => Request
+withJSONEncodedBody: (req: Request) => Request
+withHeader: (header: string, value: string) => (req: Request) => Request
+withCredentials: (value: 'omit' | 'same-origin' | 'include') => (req: Request) => Request
+withTimeout: (timeout: number) => (fetch: RetryableFetch) => RetryableFetch
+```
+
+### Fetch phase
+
+```js
+fetch: UnaryFetch
+fetch1: (fetch: BinaryFetch) => UnaryFetch
+retryableFetch: (req: Request) => RetryableFetch
+retryable: (fetch: UnaryFetch) => (req: Request) => RetryableFetch
+withRetry: (options?: RetryOptions) => (fetch: RetryableFetch) => Promise<Response>
+```
+
+### Enhance response phase
+
+```js
+checkStatus: (res: Response) => Response
+decodeArrayBufferResponse: (res: Response) => DecodedResponse
+decodeBlobResponse: (res: Response) => DecodedResponse
+decodeFormDataResponse: (res: Response) => DecodedResponse
+decodeJSONResponse: (res: Response) => DecodedResponse
+decodeResponse: (res: Response) => DecodedResponse
+decodeTextResponse: (res: Response) => DecodedResponse
+withSafe204: (text?: string, json?: any) => (res: Response) => Response
+withClone: (res: Response) => Response
+```
+
+### Predefined pipes
+
+```js
+json: (options?: RetryOptions) => Promise<DecodedResponse>
+text: (options?: RetryOptions) => Promise<DecodedResponse>
+```
