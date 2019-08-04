@@ -834,6 +834,8 @@ declare export var withEncodedBody: <A, B>(
   encoder: Encoder<A, B>,
 ) => (req: Request) => Request
 
+declare export var withJSONEncodedBody: (req: Request) => Request
+
 declare export var withHeader: (
   header: string,
   value: string,

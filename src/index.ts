@@ -994,6 +994,8 @@ export const withEncodedBody = <A, B>(encoder: Encoder<A, B>) => (
   return req
 }
 
+export const withJSONEncodedBody = withEncodedBody<any, string>(JSON.stringify)
+
 export type UnaryFetch = (req: Request) => Promise<Response>
 
 export type BinaryFetch = (url: string, init: Request) => Promise<Response>
@@ -1195,7 +1197,7 @@ export const json = (options?: RetryOptions) =>
   pipeP(
     withHeader('Content-Type', 'application/json'),
     withHeader('Accept', 'application/json'),
-    withEncodedBody(JSON.stringify),
+    withJSONEncodedBody,
     retryableFetch,
     withRetry(options),
     withSafe204(),

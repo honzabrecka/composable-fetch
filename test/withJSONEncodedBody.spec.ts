@@ -1,6 +1,4 @@
-import { withEncodedBody } from '../src/index'
-
-const encoder = (v: string) => v + 'b'
+import { withJSONEncodedBody } from '../src/index'
 
 describe('withEncodedBody', () => {
   it('does nothing when body is empty', () => {
@@ -9,7 +7,7 @@ describe('withEncodedBody', () => {
       method: 'post',
       url: 'foo',
     }
-    expect(withEncodedBody(encoder)(req)).toEqual({
+    expect(withJSONEncodedBody(req)).toEqual({
       headers: {},
       method: 'post',
       url: 'foo',
@@ -22,7 +20,7 @@ describe('withEncodedBody', () => {
       headers: {},
       url: 'foo',
     }
-    expect(withEncodedBody(encoder)(req)).toEqual({
+    expect(withJSONEncodedBody(req)).toEqual({
       body: 'a',
       headers: {},
       url: 'foo',
@@ -36,8 +34,8 @@ describe('withEncodedBody', () => {
       method: 'post',
       url: 'foo',
     }
-    expect(withEncodedBody(encoder)(req)).toEqual({
-      body: 'ab',
+    expect(withJSONEncodedBody(req)).toEqual({
+      body: '"a"',
       headers: {},
       method: 'post',
       url: 'foo',
