@@ -52,16 +52,16 @@ Composable-fetch comes with [isomoprhic-fetch](https://www.npmjs.com/package/iso
 ## Retries
 
 ```js
-withRetry(3, delays.constant())
+withRetry({ max: 3, delay: delays.constant() })
 // retries after 1 sec, then again after 1 sec, then again after 1 sec
 
-withRetry(3, delays.linear())
+withRetry({ max: 3, delay: delays.linear() })
 // retries after 1 sec, then after 2 secs, then after 3 secs
 
-withRetry(3, delays.exponential())
+withRetry({ max: 3, delay: delays.exponential() })
 // retries after 1 sec, then after 4 secs, then after 9 secs
 
-withRetry(6, delays.limited(3, delays.linear()))
+withRetry({ max: 6, delay: delays.limited(3, delays.linear()) })
 // retries after 1 sec, then 2 secs, 3 secs, then 1 sec, 2 secs, 3 secs
 ```
 
