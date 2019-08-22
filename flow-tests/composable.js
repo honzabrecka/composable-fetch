@@ -26,4 +26,4 @@ const fetch = pipeP(
   checkStatus,
 )
 
-fetch({ url: '/api/foo' })
+fetch({ url: '/api/foo' }).then(({ status }) => console.log(status))
