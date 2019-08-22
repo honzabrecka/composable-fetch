@@ -63,7 +63,7 @@ declare type PipeP = (<
   t26: UnaryFn<T26, T27>,
   t27: UnaryFn<T27, T28>,
   t28: UnaryFn<T28, T29>,
-) => (value: T1) => UnaryFnP<T1, T29>) &
+) => UnaryFnP<T1, T29>) &
   (<
     T1,
     T2,
@@ -121,7 +121,7 @@ declare type PipeP = (<
     t25: UnaryFn<T25, T26>,
     t26: UnaryFn<T26, T27>,
     t27: UnaryFn<T27, T28>,
-  ) => (value: T1) => UnaryFnP<T1, T28>) &
+  ) => UnaryFnP<T1, T28>) &
   (<
     T1,
     T2,
@@ -177,7 +177,7 @@ declare type PipeP = (<
     t24: UnaryFn<T24, T25>,
     t25: UnaryFn<T25, T26>,
     t26: UnaryFn<T26, T27>,
-  ) => (value: T1) => UnaryFnP<T1, T27>) &
+  ) => UnaryFnP<T1, T27>) &
   (<
     T1,
     T2,
@@ -231,7 +231,7 @@ declare type PipeP = (<
     t23: UnaryFn<T23, T24>,
     t24: UnaryFn<T24, T25>,
     t25: UnaryFn<T25, T26>,
-  ) => (value: T1) => UnaryFnP<T1, T26>) &
+  ) => UnaryFnP<T1, T26>) &
   (<
     T1,
     T2,
@@ -283,7 +283,7 @@ declare type PipeP = (<
     t22: UnaryFn<T22, T23>,
     t23: UnaryFn<T23, T24>,
     t24: UnaryFn<T24, T25>,
-  ) => (value: T1) => UnaryFnP<T1, T25>) &
+  ) => UnaryFnP<T1, T25>) &
   (<
     T1,
     T2,
@@ -333,7 +333,7 @@ declare type PipeP = (<
     t21: UnaryFn<T21, T22>,
     t22: UnaryFn<T22, T23>,
     t23: UnaryFn<T23, T24>,
-  ) => (value: T1) => UnaryFnP<T1, T24>) &
+  ) => UnaryFnP<T1, T24>) &
   (<
     T1,
     T2,
@@ -381,7 +381,7 @@ declare type PipeP = (<
     t20: UnaryFn<T20, T21>,
     t21: UnaryFn<T21, T22>,
     t22: UnaryFn<T22, T23>,
-  ) => (value: T1) => UnaryFnP<T1, T23>) &
+  ) => UnaryFnP<T1, T23>) &
   (<
     T1,
     T2,
@@ -427,7 +427,7 @@ declare type PipeP = (<
     t19: UnaryFn<T19, T20>,
     t20: UnaryFn<T20, T21>,
     t21: UnaryFn<T21, T22>,
-  ) => (value: T1) => UnaryFnP<T1, T22>) &
+  ) => UnaryFnP<T1, T22>) &
   (<
     T1,
     T2,
@@ -471,7 +471,7 @@ declare type PipeP = (<
     t18: UnaryFn<T18, T19>,
     t19: UnaryFn<T19, T20>,
     t20: UnaryFn<T20, T21>,
-  ) => (value: T1) => UnaryFnP<T1, T21>) &
+  ) => UnaryFnP<T1, T21>) &
   (<
     T1,
     T2,
@@ -513,7 +513,7 @@ declare type PipeP = (<
     t17: UnaryFn<T17, T18>,
     t18: UnaryFn<T18, T19>,
     t19: UnaryFn<T19, T20>,
-  ) => (value: T1) => UnaryFnP<T1, T20>) &
+  ) => UnaryFnP<T1, T20>) &
   (<
     T1,
     T2,
@@ -553,7 +553,7 @@ declare type PipeP = (<
     t16: UnaryFn<T16, T17>,
     t17: UnaryFn<T17, T18>,
     t18: UnaryFn<T18, T19>,
-  ) => (value: T1) => UnaryFnP<T1, T19>) &
+  ) => UnaryFnP<T1, T19>) &
   (<
     T1,
     T2,
@@ -591,7 +591,7 @@ declare type PipeP = (<
     t15: UnaryFn<T15, T16>,
     t16: UnaryFn<T16, T17>,
     t17: UnaryFn<T17, T18>,
-  ) => (value: T1) => UnaryFnP<T1, T18>) &
+  ) => UnaryFnP<T1, T18>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -609,7 +609,7 @@ declare type PipeP = (<
     t14: UnaryFn<T14, T15>,
     t15: UnaryFn<T15, T16>,
     t16: UnaryFn<T16, T17>,
-  ) => (value: T1) => UnaryFnP<T1, T17>) &
+  ) => UnaryFnP<T1, T17>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -626,7 +626,7 @@ declare type PipeP = (<
     t13: UnaryFn<T13, T14>,
     t14: UnaryFn<T14, T15>,
     t15: UnaryFn<T15, T16>,
-  ) => (value: T1) => UnaryFnP<T1, T16>) &
+  ) => UnaryFnP<T1, T16>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -642,7 +642,7 @@ declare type PipeP = (<
     t12: UnaryFn<T12, T13>,
     t13: UnaryFn<T13, T14>,
     t14: UnaryFn<T14, T15>,
-  ) => (value: T1) => UnaryFnP<T1, T15>) &
+  ) => UnaryFnP<T1, T15>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -657,7 +657,7 @@ declare type PipeP = (<
     t11: UnaryFn<T11, T12>,
     t12: UnaryFn<T12, T13>,
     t13: UnaryFn<T13, T14>,
-  ) => (value: T1) => UnaryFnP<T1, T14>) &
+  ) => UnaryFnP<T1, T14>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -671,7 +671,7 @@ declare type PipeP = (<
     t10: UnaryFn<T10, T11>,
     t11: UnaryFn<T11, T12>,
     t12: UnaryFn<T12, T13>,
-  ) => (value: T1) => UnaryFnP<T1, T13>) &
+  ) => UnaryFnP<T1, T13>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -684,7 +684,7 @@ declare type PipeP = (<
     t9: UnaryFn<T9, T10>,
     t10: UnaryFn<T10, T11>,
     t11: UnaryFn<T11, T12>,
-  ) => (value: T1) => UnaryFnP<T1, T12>) &
+  ) => UnaryFnP<T1, T12>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -696,7 +696,7 @@ declare type PipeP = (<
     t8: UnaryFn<T8, T9>,
     t9: UnaryFn<T9, T10>,
     t10: UnaryFn<T10, T11>,
-  ) => (value: T1) => UnaryFnP<T1, T11>) &
+  ) => UnaryFnP<T1, T11>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -707,7 +707,7 @@ declare type PipeP = (<
     t7: UnaryFn<T7, T8>,
     t8: UnaryFn<T8, T9>,
     t9: UnaryFn<T9, T10>,
-  ) => (value: T1) => UnaryFnP<T1, T10>) &
+  ) => UnaryFnP<T1, T10>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8, T9>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -717,7 +717,7 @@ declare type PipeP = (<
     t6: UnaryFn<T6, T7>,
     t7: UnaryFn<T7, T8>,
     t8: UnaryFn<T8, T9>,
-  ) => (value: T1) => UnaryFnP<T1, T9>) &
+  ) => UnaryFnP<T1, T9>) &
   (<T1, T2, T3, T4, T5, T6, T7, T8>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -726,7 +726,7 @@ declare type PipeP = (<
     t5: UnaryFn<T5, T6>,
     t6: UnaryFn<T6, T7>,
     t7: UnaryFn<T7, T8>,
-  ) => (value: T1) => UnaryFnP<T1, T8>) &
+  ) => UnaryFnP<T1, T8>) &
   (<T1, T2, T3, T4, T5, T6, T7>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
@@ -734,30 +734,30 @@ declare type PipeP = (<
     t4: UnaryFn<T4, T5>,
     t5: UnaryFn<T5, T6>,
     t6: UnaryFn<T6, T7>,
-  ) => (value: T1) => UnaryFnP<T1, T7>) &
+  ) => UnaryFnP<T1, T7>) &
   (<T1, T2, T3, T4, T5, T6>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
     t3: UnaryFn<T3, T4>,
     t4: UnaryFn<T4, T5>,
     t5: UnaryFn<T5, T6>,
-  ) => (value: T1) => UnaryFnP<T1, T6>) &
+  ) => UnaryFnP<T1, T6>) &
   (<T1, T2, T3, T4, T5>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
     t3: UnaryFn<T3, T4>,
     t4: UnaryFn<T4, T5>,
-  ) => (value: T1) => UnaryFnP<T1, T5>) &
+  ) => UnaryFnP<T1, T5>) &
   (<T1, T2, T3, T4>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
     t3: UnaryFn<T3, T4>,
-  ) => (value: T1) => UnaryFnP<T1, T4>) &
+  ) => UnaryFnP<T1, T4>) &
   (<T1, T2, T3>(
     t1: UnaryFn<T1, T2>,
     t2: UnaryFn<T2, T3>,
-  ) => (value: T1) => UnaryFnP<T1, T3>) &
-  (<T1, T2>(t1: UnaryFn<T1, T2>) => (value: T1) => UnaryFnP<T1, T2>)
+  ) => UnaryFnP<T1, T3>) &
+  (<T1, T2>(t1: UnaryFn<T1, T2>) => UnaryFnP<T1, T2>)
 
 declare export var pipeP: PipeP
 // declare export var pipeP: <A, B>(...fns: Function[]) => UnaryFnP<A, B>
