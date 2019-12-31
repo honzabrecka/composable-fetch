@@ -888,15 +888,14 @@ export function pipeP<
 export function pipeP(...fns: Function[]) {
   return (value: any) =>
     new Promise((resolve, reject) => {
-      async function run([f, ...fns]: Function[], value: any) {
+      (async function run([f, ...fns]: Function[], value: any) {
         try {
           if (f === undefined) resolve(value)
           else run(fns, await f(value))
         } catch (e) {
           reject(e)
         }
-      }
-      run(fns, value)
+      })(fns, value)
     })
 }
 
@@ -1061,7 +1060,7 @@ export const withRetry = ({
   maxTimeout = Number.MAX_VALUE,
 }: RetryOptions = {}) => (fetch: RetryableFetch): Promise<Response> => {
   return new Promise((resolve, reject) => {
-    async function run(i: number) {
+    (async function run(i: number) {
       if (i === max + 1) reject(newError(errorIds.RetryError, 'Retry failed'))
       else
         try {
@@ -1082,8 +1081,7 @@ export const withRetry = ({
             run(i + 1)
           }
         }
-    }
-    run(1)
+    })(1)
   })
 }
 
