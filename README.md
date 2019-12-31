@@ -47,7 +47,7 @@ pipe = enhance request -> fetch (with retries) -> enhance response
 
 ## fetch
 
-Composable-fetch comes with [isomoprhic-fetch](https://www.npmjs.com/package/isomorphic-fetch) and exposes its own (wrapped unary) `fetch`, respectively `retryableFetch` function.
+Composable-fetch comes with [isomorphic-fetch](https://www.npmjs.com/package/isomorphic-fetch) and exposes its own (wrapped unary) `fetch`, respectively `retryableFetch` function.
 
 ## Retries
 
