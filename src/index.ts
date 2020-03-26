@@ -1041,7 +1041,13 @@ export const decodeRetryAfterHeaderValue = (
   response?: Response,
 ): number | void => {
   const value = response && response.headers.get('retry-after')
-  if (typeof value === 'string') return new Date(value).getTime() - Date.now()
+  if (typeof value === 'string') {
+    // node-fetch workaround
+    // it converts number to string
+    const parsed = parseInt(value, 10)
+    if (`${parsed}` === value) return parsed
+    return new Date(value).getTime() - Date.now()
+  }
   if (typeof value === 'number') return value
   return undefined
 }
