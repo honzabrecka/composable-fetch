@@ -1,4 +1,7 @@
+import { Headers } from 'node-fetch'
 import { withHeader } from '../src/index'
+
+(global as any).Headers = Headers
 
 describe('withHeader', () => {
   it('assocs header', () => {
@@ -50,7 +53,6 @@ describe('withHeader', () => {
       url: 'foo',
     }
     const { headers } = withHeader('Accept-Encoding', 'gzip')(req as any)
-    // NOTE node-fetch returns this instead of deflate, gzip
-    expect((headers as any).get('Accept-Encoding')).toEqual('deflate')
+    expect((headers as any).get('Accept-Encoding')).toEqual('deflate, gzip')
   })
 })
