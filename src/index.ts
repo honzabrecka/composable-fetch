@@ -1212,3 +1212,21 @@ export const text = (fetch: BinaryFetch, options?: RetryOptions) =>
     decodeTextResponse,
     checkStatus,
   )
+
+  export const abortable = () => {
+    const controller = new AbortController()
+    const { signal } = controller
+    return {
+      signal,
+      abort: () => {
+        controller.abort()
+      },
+    }
+  }
+
+  export const ignoreAbortError = <T>(handler: (error: Error) => T) => (
+    error: Error,
+  ): T | void => {
+    if (error.name === 'AbortError') return
+    return handler(error)
+  }
