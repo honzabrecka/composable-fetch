@@ -1,5 +1,3 @@
-import $fetch from 'isomorphic-fetch'
-
 export function pipeP<T>(): (v: T) => Promise<T>
 export function pipeP<T1, T2>(
   f1: (v: T1) => T2 | Promise<T2>,
@@ -888,7 +886,7 @@ export function pipeP<
 export function pipeP(...fns: Function[]) {
   return (value: any) =>
     new Promise((resolve, reject) => {
-      (async function run([f, ...fns]: Function[], value: any) {
+      ;(async function run([f, ...fns]: Function[], value: any) {
         try {
           if (f === undefined) resolve(value)
           else run(fns, await f(value))
@@ -1060,7 +1058,7 @@ export const withRetry = ({
   maxTimeout = Number.MAX_VALUE,
 }: RetryOptions = {}) => (fetch: RetryableFetch): Promise<Response> => {
   return new Promise((resolve, reject) => {
-    (async function run(i: number) {
+    ;(async function run(i: number) {
       if (i === max + 1) reject(newError(errorIds.RetryError, 'Retry failed'))
       else
         try {
@@ -1188,24 +1186,21 @@ export const logError = (log: Log = console.error.bind(console)) => async (
   throw error
 }
 
-export const fetch = fetch1($fetch)
-export const retryableFetch = retryable(fetch)
-
-export const json = (options?: RetryOptions) =>
+export const json = (fetch: BinaryFetch, options?: RetryOptions) =>
   pipeP(
     withHeader('Content-Type', 'application/json'),
     withHeader('Accept', 'application/json'),
     withJSONEncodedBody,
-    retryableFetch,
+    retryable(fetch1(fetch)),
     withRetry(options),
     withSafe204(),
     decodeJSONResponse,
     checkStatus,
   )
 
-export const text = (options?: RetryOptions) =>
+export const text = (fetch: BinaryFetch, options?: RetryOptions) =>
   pipeP(
-    retryableFetch,
+    retryable(fetch1(fetch)),
     withRetry(options),
     withSafe204(),
     decodeTextResponse,

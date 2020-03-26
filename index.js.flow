@@ -816,8 +816,6 @@ declare export var decodeResponse: (res: Response) => DecodedResponse
 
 declare export var decodeTextResponse: (res: Response) => DecodedResponse
 
-declare export var fetch: UnaryFetch
-
 declare export var fetch1: (fetch: BinaryFetch) => UnaryFetch
 
 declare export var logError: (log: Function) => (error: Error) => Promise<void>
@@ -825,8 +823,6 @@ declare export var logError: (log: Function) => (error: Error) => Promise<void>
 declare export var retryable: (
   fetch: UnaryFetch,
 ) => (req: Request) => RetryableFetch
-
-declare export var retryableFetch: (req: Request) => RetryableFetch
 
 declare export var withBaseUrl: (baseUrl: string) => (req: Request) => Request
 

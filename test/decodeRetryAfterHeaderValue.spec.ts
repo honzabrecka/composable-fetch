@@ -1,4 +1,7 @@
+import { Headers } from 'node-fetch'
 import { decodeRetryAfterHeaderValue } from '../src/index'
+
+(global as any).Headers = Headers
 
 const originalNow = Date.now
 

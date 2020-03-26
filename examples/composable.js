@@ -1,3 +1,4 @@
+const $fetch = require('node-fetch')
 const composableFetch = require('../dist/index')
 const { pipeP, tryCatchP } = require('../dist/index')
 const transit = require('transit-js')
@@ -7,7 +8,7 @@ const writer = transit.writer('json')
 const reader = transit.reader('json')
 
 const fetch = pipeP(
-  composableFetch.retryableFetch,
+  composableFetch.retryable(composableFetch.fetch1($fetch)),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
   composableFetch.withClone,

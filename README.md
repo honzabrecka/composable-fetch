@@ -4,6 +4,7 @@
  - Just javascript and promises
  - Brings solutions for most common cases such as status code checking, body encoding/decoding, retries & retries strategies, ...
  - Provides functional API
+ - Dependency free
  - First class support for both TypeScript and Flow
 
 ## Installation
@@ -24,7 +25,7 @@ const fetchJSON = composableFetch.pipeP(
   composableFetch.withHeader('Content-Type', 'application/json'),
   composableFetch.withHeader('Accept', 'application/json'),
   composableFetch.withEncodedBody(JSON.stringify),
-  composableFetch.retryableFetch,
+  composableFetch.retryable(composableFetch.fetch1(window.fetch)),
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
   composableFetch.decodeJSONResponse,
@@ -32,7 +33,7 @@ const fetchJSON = composableFetch.pipeP(
 )
 
 fetchJSON({ url: '/foo' }).then(log).catch(log)
-fetchJSON({ url: '/foo', method: 'POST', body: [1, 2, 3] }).then(log).catch(log)
+fetchJSON({ url: '/bar', method: 'POST', body: [1, 2, 3] }).then(log).catch(log)
 ```
 
 For better overview of how composability may help take a look at `examples/composable.js` example.
@@ -47,7 +48,7 @@ pipe = enhance request -> fetch (with retries) -> enhance response
 
 ## fetch
 
-Composable-fetch comes with [isomorphic-fetch](https://www.npmjs.com/package/isomorphic-fetch) and exposes its own (wrapped unary) `fetch`, respectively `retryableFetch` function.
+For better composability, composable-fetch required unary `fetch`, however original `fetch` function or its polyfills has binary arity. Don't worry, composable-fetch comes with `fetch1` wrapper that transforms unary interface to its binary counterpart.
 
 ## Retries
 
@@ -65,7 +66,7 @@ withRetry({ max: 6, delay: delays.limited(3, delays.linear()) })
 // retries after 1 sec, then 2 secs, 3 secs, then 1 sec, 2 secs, 3 secs
 ```
 
-When using `withRetry`, make sure that you are using `retryableFetch` instead of `fetch`.
+When using `withRetry`, make sure that you wrapped `fetch` with `retryable`.
 
 ## Error handling & logging
 
@@ -91,7 +92,7 @@ const fetchJSON = pipeP(
   withHeader('Accept', 'application/json'),
   withEncodedBody(JSON.stringify),
   tap(console.log.bind(console, 'request:')),
-  fetch,
+  fetch1(window.fetch),
   // ...
 )
 ```
@@ -135,9 +136,7 @@ withTimeout: (timeout: number) => (fetch: RetryableFetch) => RetryableFetch
 ### Fetch phase
 
 ```js
-fetch: UnaryFetch
 fetch1: (fetch: BinaryFetch) => UnaryFetch
-retryableFetch: (req: Request) => RetryableFetch
 retryable: (fetch: UnaryFetch) => (req: Request) => RetryableFetch
 withRetry: (options?: RetryOptions) => (fetch: RetryableFetch) => Promise<Response>
 ```
@@ -159,6 +158,6 @@ withClone: (res: Response) => Response
 ### Predefined pipes
 
 ```js
-json: (options?: RetryOptions) => Promise<DecodedResponse>
-text: (options?: RetryOptions) => Promise<DecodedResponse>
+json: (fetch: BinaryFetch, options?: RetryOptions) => Promise<DecodedResponse>
+text: (fetch: BinaryFetch, options?: RetryOptions) => Promise<DecodedResponse>
 ```
