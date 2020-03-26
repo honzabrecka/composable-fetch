@@ -161,3 +161,12 @@ withClone: (res: Response) => Response
 json: (fetch: BinaryFetch, options?: RetryOptions) => Promise<DecodedResponse>
 text: (fetch: BinaryFetch, options?: RetryOptions) => Promise<DecodedResponse>
 ```
+
+### Abort
+
+For better understanding how to abort fetch request, go to `examples/abort.js` example.
+
+```js
+abortable: () => { signal: AbortSignal, abort: () => void }
+ignoreAbortError: (handler: Function) => (error: Error)
+```

@@ -861,3 +861,12 @@ declare export var decodeRetryAfterHeaderValue: (res?: Response) => ?number
 declare export var json: (options?: RetryOptions) => Promise<DecodedResponse>
 
 declare export var text: (options?: RetryOptions) => Promise<DecodedResponse>
+
+declare export var abortable: () => {|
+  signal: AbortSignal,
+  abort: () => void,
+|}
+
+declare export var ignoreAbortError: <T>(handler: (error: Error) => ?T) => (
+  error: Error,
+) => T
