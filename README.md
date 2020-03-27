@@ -168,5 +168,5 @@ For better understanding how to abort fetch request, go to `examples/abort.js` e
 
 ```js
 abortable: () => { signal: AbortSignal, abort: () => void }
-ignoreAbortError: (handler: Function) => (error: Error)
+ignoreAbortError: <T>(handler: (error: Error) => T) => (error: Error) => T
 ```
