@@ -1,0 +1,91 @@
+#!/usr/bin/env plk
+
+; requires planck repl
+; https://planck-repl.org/guide-all.html
+
+(ns sandbox.gen
+  (:require [clojure.test :refer [deftest testing is run-tests]]))
+
+(defn t [n] (str "t" n))
+
+(defn T [n] (str "T" n))
+
+(defn pairs [ns] (map vector ns (drop 1 ns)))
+
+(defn gen-flow
+  [n]
+  (let [ns (range 1 (inc n))
+        ps (pairs ns)]
+    (str "<"
+         (->> ns (map T) (clojure.string/join ", "))
+         ">"
+         "("
+         (->> ps (map (fn [[from to]]
+                        (str (t from) ": UnaryFn<" (T from) ", " (T to) ">")))
+              (clojure.string/join ", "))
+         ")"
+         " => "
+         "UnaryFnP<" (T (first ns)) ", " (T (last ns)) ">")))
+
+(deftest gen-flow-test
+  (testing "generated code for flow"
+    (is (= "<T1, T2>(t1: UnaryFn<T1, T2>) => UnaryFnP<T1, T2>"
+           (gen-flow 2)))
+    (is (= "<T1, T2, T3>(t1: UnaryFn<T1, T2>, t2: UnaryFn<T2, T3>) => UnaryFnP<T1, T3>"
+           (gen-flow 3)))))
+
+(defn gen-ts
+  "export function pipeP<T1, T2, T3>(t1: (v: T1) => T2 | Promise<T2>, t2: (v: T2) => T3 | Promise<T3>): (v: T1) => Promise<T3>"
+  [n]
+  (let [ns (range 1 (inc n))
+        ps (pairs ns)]
+    (str "export function pipeP"
+         "<"
+         (->> ns (map T) (clojure.string/join ", "))
+         ">"
+         "("
+         (->> ps (map (fn [[from to]]
+                        (str (t from) ": (v: " (T from) ") => " (T to) " | Promise<" (T to) ">")))
+              (clojure.string/join ", "))
+         ")"
+         ": (v: " (T (first ns)) ") => Promise<" (T (last ns)) ">"
+         )))
+
+(deftest gen-ts-test
+  (testing "generated code for typescript"
+    (is (= "export function pipeP<T1, T2>(t1: (v: T1) => T2 | Promise<T2>): (v: T1) => Promise<T2>"
+           (gen-ts 2)))
+    (is (= "export function pipeP<T1, T2, T3>(t1: (v: T1) => T2 | Promise<T2>, t2: (v: T2) => T3 | Promise<T3>): (v: T1) => Promise<T3>"
+           (gen-ts 3)))))
+
+(def n 30)
+
+(defn generate-flow
+  [n]
+  (str "declare type PipeP = "
+       (->> (range 2 (inc n))
+            (map gen-flow)
+            (map #(str "(" % ")"))
+            (reverse)
+            (clojure.string/join " & "))))
+
+(defn generate-ts
+  [n]
+  (->> (range 2 (inc n))
+       (map gen-ts)
+       (clojure.string/join "\n")))
+
+(comment
+  (generate-flow n)
+  (generate-ts n)
+  ;;
+  (run-tests))
+
+(defn -main [target]
+  (println
+    (case target
+          "ts"   (generate-ts n)
+          "flow" (generate-flow n)
+          "specify target: gen \"flow\" or \"ts\"")))
+
+(set! *main-cli-fn* -main)
