@@ -1,11 +1,14 @@
-import { delays, withRetry } from '../src/index'
+import { delays, errorIds,  withRetry } from '../src/index'
 
 const failingFetch = async () => {
-  throw new Error('Failed')
+  const e = new Error('Failed')
+  ;(e as any).id = errorIds.RetryError
+  throw e
 }
 
 const failingFetchWithRes = (retryAfter: number) => async () => {
   const e = new Error('Fail')
+  ;(e as any).id = errorIds.RetryError
   ;(e as any).res = {
     headers: {
       get: () => retryAfter,
@@ -73,6 +76,19 @@ describe('withRetry', () => {
       expect(delay).not.toBeCalled()
       expect(e).toBeInstanceOf(Error)
       expect(e.id).toBe('RetryError')
+    }
+  })
+
+  it('does not retry error with id !== RetryError', async () => {
+    const tries = [() => { throw new Error('oops') }]
+    const delay = jest.fn()
+    try {
+      await withRetry({ max: 2, delay })(retryableF(tries))
+      fail()
+    } catch (e) {
+      expect(delay).not.toBeCalled()
+      expect(e).toBeInstanceOf(Error)
+      expect(e.message).toBe('oops')
     }
   })
 })

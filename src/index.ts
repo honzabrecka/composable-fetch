@@ -1070,20 +1070,22 @@ export const withRetry = ({
         try {
           resolve(await fetch())
         } catch (error) {
+          if (error.id !== errorIds.RetryError) {
+            reject(error)
+            return
+          }
           const retryAfter = decodeRetryAfterHeaderValue(error.res)
-          if (retryAfter > maxTimeout)
+          if (retryAfter > maxTimeout) {
             reject(
               newError(
                 errorIds.RetryError,
                 'Retry-after is higher than maxTimeout',
               ),
             )
-          else {
-            await (retryAfter === undefined
-              ? delay(i)
-              : delays.delay(retryAfter))
-            run(i + 1)
+            return
           }
+          await (retryAfter === undefined ? delay(i) : delays.delay(retryAfter))
+          run(i + 1)
         }
     })(1)
   })
@@ -1213,20 +1215,20 @@ export const text = (fetch: BinaryFetch, options?: RetryOptions) =>
     checkStatus,
   )
 
-  export const abortable = () => {
-    const controller = new AbortController()
-    const { signal } = controller
-    return {
-      signal,
-      abort: () => {
-        controller.abort()
-      },
-    }
+export const abortable = () => {
+  const controller = new AbortController()
+  const { signal } = controller
+  return {
+    signal,
+    abort: () => {
+      controller.abort()
+    },
   }
+}
 
-  export const ignoreAbortError = <T>(handler: (error: Error) => T) => (
-    error: Error,
-  ): T | void => {
-    if (error.name === 'AbortError') return
-    return handler(error)
-  }
+export const ignoreAbortError = <T>(handler: (error: Error) => T) => (
+  error: Error,
+): T | void => {
+  if (error.name === 'AbortError') return
+  return handler(error)
+}
