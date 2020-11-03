@@ -27,19 +27,18 @@
     "trailingComma": "all"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.25",
-    "@types/node-fetch": "^2.5.5",
-    "flow-bin": "^0.114.0",
+    "@types/jest": "^26.0.15",
+    "@types/node-fetch": "^2.5.7",
+    "flow-bin": "^0.137.0",
     "node-fetch": "^2.6.1",
-    "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.1",
+    "prettier": "^2.1.2",
     "rapid-check": "^0.3.0",
-    "transit-js": "^0.8.861",
-    "tsdx": "^0.12.1",
+    "transit-js": "^0.8.867",
+    "tsdx": "^0.14.1",
     "tslib": "^1.10.0",
     "tslint": "^5.20.1",
     "tslint-config-prettier": "^1.18.0",
-    "typescript": "^3.7.4"
+    "typescript": "^4.0.5"
   },
   "dependencies": {}
 }
