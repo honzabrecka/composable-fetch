@@ -48,7 +48,7 @@ pipe = enhance request -> fetch (with retries) -> enhance response
 
 ## fetch
 
-For better composability, composable-fetch required unary `fetch`, however original `fetch` function or its polyfills has binary arity. Don't worry, composable-fetch comes with `fetch1` wrapper that transforms unary interface to its binary counterpart.
+For better composability, composable-fetch requires unary `fetch`. However original `fetch` function or its polyfills is of binary arity. Don't worry, composable-fetch comes with `fetch1` wrapper that transforms unary interface to its binary counterpart.
 
 ## Retries
 
