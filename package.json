@@ -30,7 +30,7 @@
     "@types/jest": "^26.0.15",
     "@types/node-fetch": "^2.5.7",
     "flow-bin": "^0.137.0",
-    "node-fetch": "^2.6.1",
+    "node-fetch": "^2.6.7",
     "prettier": "^2.1.2",
     "rapid-check": "^0.3.0",
     "transit-js": "^0.8.867",
