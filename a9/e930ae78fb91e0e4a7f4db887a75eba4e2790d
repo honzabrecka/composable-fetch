@@ -1,0 +1,101 @@
+biome.json
+  h_6f2957bdd37073 1-28
+test/withHeader.spec.ts
+  h_6f2957bdd37073 1-2,35,46,48-82,85-89
+test/delays.spec.ts
+  h_6f2957bdd37073 1-2,4-5,7-13,18,21,27,30,36,39-48,53-58,60,63
+test/fetch1.spec.ts
+  h_6f2957bdd37073 1-2,11
+test/pipeP.spec.ts
+  h_6f2957bdd37073 2-3,39-40,42-43
+test/decodeFormDataResponse.spec.ts
+  h_6f2957bdd37073 1-2,12-16
+examples/abort.ts
+  h_6f2957bdd37073 1,5,7-13,15-27
+test/withEncodedBody.spec.ts
+  h_6f2957bdd37073 1-2,4,33-46
+README.md
+  h_6f2957bdd37073 1,3-7,18,31,35-37,40-52,59,68-69,78-80,87-98,106,115,141,165-175,182-189,192-193,196-197,200-205,213-214,217-218,221,224-225
+types/transit-js/index.d.ts
+  h_6f2957bdd37073 1-3,5-12
+src/index.ts
+  h_6f2957bdd37073 893-894,904-910,913-918,921,926-927,940-941,950-952,959-965,967,970,976-979,983-984,986-989,996-1000,1003-1005,1011,1013-1015,1019-1024,1026-1038,1063-1066,1070-1071,1074,1076-1078,1080-1086,1088-1089,1092-1102,1116,1118,1120-1125,1127,1129-1131,1133-1139,1147,1155,1159-1160,1166,1169-1170,1173,1178,1184-1186,1188-1191,1214,1222-1224
+  h_6f2957bdd37073 118,149,182,217,254,293,334,377,422,469,518,569,622,677,734,793,854,900-903,928-931,957,966,971-975,980-982,985,1006-1010,1016,1018,1025,1039-1042,1046-1052,1054-1057,1072,1075,1079,1087,1090-1091,1108-1112,1117,1119,1126,1128,1132,1143,1148,1151,1153-1154,1156-1158,1161-1165,1167-1168,1171-1172,1174-1177,1179-1181,1187,1192-1194,1199,1209,1218-1221,1228-1230,1234-1240,1244-1246,1251,1256,1260-1261,1267,1271,1273,1275-1276,1278-1279,1289-1293,1301-1306,1308-1321,1329,1333-1336,1345-1348,1359-1364
+.gitignore
+  h_6f2957bdd37073 4-5
+examples/composable.ts
+  h_6f2957bdd37073 1-3,10,17,20,29,33,35-37,42-43,48,51,59,61,63-65
+test/copyRequest.spec.ts
+  h_6f2957bdd37073 1-5,7,9-105
+test/json.spec.ts
+  h_6f2957bdd37073 1-79
+test/withClone.spec.ts
+  h_6f2957bdd37073 1-2,7
+types/rapid-check/index.d.ts
+  h_6f2957bdd37073 1
+test/withCredentials.spec.ts
+  h_6f2957bdd37073 1-2
+test/decodeBlobResponse.spec.ts
+  h_6f2957bdd37073 1-2
+test/withJSONEncodedBody.spec.ts
+  h_6f2957bdd37073 1-2,4
+examples/json.ts
+  h_6f2957bdd37073 1,5,7-9
+test/withTimeout.spec.ts
+  h_6f2957bdd37073 1-2,6-8,11-14,17-19,21-22
+test/checkStatus.spec.ts
+  h_6f2957bdd37073 2-3,37-38
+test/tryCatchP.spec.ts
+  h_6f2957bdd37073 1-2,5,9,15,21
+test/decodeJSONResponse.spec.ts
+  h_6f2957bdd37073 1-2,12-16
+test/decodeTextResponse.spec.ts
+  h_6f2957bdd37073 1-2
+test/withSafe204.spec.ts
+  h_6f2957bdd37073 1-2,10
+CHANGELOG.md
+  h_6f2957bdd37073 1-45
+.github/workflows/ci.yml
+  h_6f2957bdd37073 1-7,10-13,15-24
+test/decodeResponse.spec.ts
+  h_6f2957bdd37073 1-2,37
+tsconfig.json
+  h_6f2957bdd37073 2,4,6-14,16-17,22
+test/withBaseUrl.spec.ts
+  h_6f2957bdd37073 1-2
+package-lock.json
+  h_6f2957bdd37073 1-2478
+test/delay.spec.ts
+  h_6f2957bdd37073 1-6,10-18
+package.json
+  h_6f2957bdd37073 3,6,10-20,24-26,28-36,39-42,44-48
+test/withRetry.spec.ts
+  h_6f2957bdd37073 1-2,10-17,32-33,38-75,77-108,111-116,119-123,126-147,153-154,160-165,169-178
+test/ignoreAbortError.spec.ts
+  h_6f2957bdd37073 1-2,8,15
+tsdown.config.ts
+  h_6f2957bdd37073 1-14
+test/decodeRetryAfterHeaderValue.spec.ts
+  h_6f2957bdd37073 1-2,10-17,20,23-24,27-33,35-49
+test/logError.spec.ts
+  h_6f2957bdd37073 1-2,5,8-9,30-38,47-64
+test/retryable.spec.ts
+  h_6f2957bdd37073 1-2,7,15,18-19,26-52,62-63
+examples/run.ts
+  h_6f2957bdd37073 1-17
+test/text.spec.ts
+  h_6f2957bdd37073 1-24
+test/decodeArrayBufferResponse.spec.ts
+  h_6f2957bdd37073 1-2,7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "a9e930ae78fb91e0e4a7f4db887a75eba4e2790d",
+  "prompts": {},
+  "humans": {
+    "h_6f2957bdd37073": {
+      "author": "Jan Brecka <jan.brecka@gmail.com>"
+    }
+  }
+}
