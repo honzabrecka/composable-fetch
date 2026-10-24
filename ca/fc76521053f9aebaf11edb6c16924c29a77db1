@@ -1,0 +1,103 @@
+package.json
+  h_6f2957bdd37073 3,6,10-20,24,29-36,39-42,44-47
+  h_6f2957bdd37073 25-26,28,48
+src/index.ts
+  h_6f2957bdd37073 893-894,900-901,904-910,917-918,926,928,931,940-941,952,957,961-965,967,970,972,974,979,981,983-989,996-1000,1003-1006,1015,1019-1028,1054,1064-1066,1072,1075-1076,1079-1080,1082-1086,1088-1091,1093-1101,1108-1110,1119-1120,1122,1125-1127,1129,1132-1136,1138-1139,1148,1151,1153,1155-1156,1163,1168,1173-1174,1178-1179,1187,1191-1192,1199,1209,1218
+  h_6f2957bdd37073 118,149,182,217,254,293,334,377,422,469,518,569,622,677,734,793,854,902-903,913-916,921,927,929-930,950-951,959-960,966,971,973,975-978,980,982,1007-1011,1013-1014,1016,1018,1029-1042,1046-1052,1055-1057,1063,1070-1071,1074,1077-1078,1081,1087,1092,1102,1111-1112,1116-1118,1121,1123-1124,1128,1130-1131,1137,1143,1147,1154,1157-1162,1164-1167,1169-1172,1175-1177,1180-1181,1184-1186,1188-1190,1193-1194,1214,1219-1224,1228-1230,1234-1240,1244-1246,1251,1256,1260-1261,1267,1271,1273,1275-1276,1278-1279,1289-1293,1301-1306,1308-1321,1329,1333-1336,1345-1348,1359-1364
+CHANGELOG.md
+  h_6f2957bdd37073 1-45
+README.md
+  h_6f2957bdd37073 1,6-7,31,141
+  h_6f2957bdd37073 3-5,18,35-37,40-52,59,68-69,78-80,87-98,106,115,165-175,182-189,192-193,196-197,200-205,213-214,217-218,221,224-225
+.github/workflows/ci.yml
+  h_6f2957bdd37073 1-7,10-13,15-24
+.gitignore
+  h_6f2957bdd37073 4-5
+biome.json
+  h_6f2957bdd37073 1-28
+examples/abort.ts
+  h_6f2957bdd37073 1,5,7-13,15-27
+examples/composable.ts
+  h_6f2957bdd37073 1-3,10,17,20,29,33,35-37,42-43,48,51,59,61,63-65
+examples/json.ts
+  h_6f2957bdd37073 1,5,7-9
+examples/run.ts
+  h_6f2957bdd37073 1-17
+package-lock.json
+  h_6f2957bdd37073 1-2478
+test/checkStatus.spec.ts
+  h_6f2957bdd37073 2-3,37-38
+test/copyRequest.spec.ts
+  h_6f2957bdd37073 1-5,7,9-105
+test/decodeArrayBufferResponse.spec.ts
+  h_6f2957bdd37073 1-2,7
+test/decodeBlobResponse.spec.ts
+  h_6f2957bdd37073 1-2
+test/decodeFormDataResponse.spec.ts
+  h_6f2957bdd37073 1-2,12-16
+test/decodeJSONResponse.spec.ts
+  h_6f2957bdd37073 1-2,12-16
+test/decodeResponse.spec.ts
+  h_6f2957bdd37073 1-2,37
+test/decodeRetryAfterHeaderValue.spec.ts
+  h_6f2957bdd37073 1-2,10-17,20,23-24,27-33,35-49
+test/decodeTextResponse.spec.ts
+  h_6f2957bdd37073 1-2
+test/delay.spec.ts
+  h_6f2957bdd37073 1-6,10-18
+test/delays.spec.ts
+  h_6f2957bdd37073 1-2,4-5,7-13,18,21,27,30,36,39-48,53-58,60,63
+test/fetch1.spec.ts
+  h_6f2957bdd37073 1-2,11
+test/ignoreAbortError.spec.ts
+  h_6f2957bdd37073 1-2,8,15
+test/json.spec.ts
+  h_6f2957bdd37073 1-79
+test/logError.spec.ts
+  h_6f2957bdd37073 1-2,5,8-9,30-38,47-64
+test/pipeP.spec.ts
+  h_6f2957bdd37073 2-3,39-40,42-43
+test/retryable.spec.ts
+  h_6f2957bdd37073 1-2,7,15,18-19,26-52,62-63
+test/text.spec.ts
+  h_6f2957bdd37073 1-24
+test/tryCatchP.spec.ts
+  h_6f2957bdd37073 1-2,5,9,15,21
+test/withBaseUrl.spec.ts
+  h_6f2957bdd37073 1-2
+test/withClone.spec.ts
+  h_6f2957bdd37073 1-2,7
+test/withCredentials.spec.ts
+  h_6f2957bdd37073 1-2
+test/withEncodedBody.spec.ts
+  h_6f2957bdd37073 1-2,4,33-46
+test/withHeader.spec.ts
+  h_6f2957bdd37073 1-2,35,46,48-82,85-89
+test/withJSONEncodedBody.spec.ts
+  h_6f2957bdd37073 1-2,4
+test/withRetry.spec.ts
+  h_6f2957bdd37073 1-2,10-17,32-33,38-75,77-108,111-116,119-123,126-147,153-154,160-165,169-178
+test/withSafe204.spec.ts
+  h_6f2957bdd37073 1-2,10
+test/withTimeout.spec.ts
+  h_6f2957bdd37073 1-2,6-8,11-14,17-19,21-22
+tsconfig.json
+  h_6f2957bdd37073 2,4,6-14,16-17,22
+tsdown.config.ts
+  h_6f2957bdd37073 1-14
+types/rapid-check/index.d.ts
+  h_6f2957bdd37073 1
+types/transit-js/index.d.ts
+  h_6f2957bdd37073 1-3,5-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "cafc76521053f9aebaf11edb6c16924c29a77db1",
+  "prompts": {},
+  "humans": {
+    "h_6f2957bdd37073": {
+      "author": "Jan Brecka <jan.brecka@gmail.com>"
+    }
+  }
+}
