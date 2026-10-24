@@ -1,4 +1,5 @@
-import { decodeTextResponse } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { decodeTextResponse } from '../src/index.ts'
 
 describe('decodeTextResponse', () => {
   it('decodes text response', async () => {

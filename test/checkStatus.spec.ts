@@ -1,5 +1,6 @@
 import { forAll, generators } from 'rapid-check'
-import { checkStatus } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { checkStatus } from '../src/index.ts'
 
 describe('checkStatus', () => {
   it('passes untouched res for res.status >= 200 && res.status < 400', async () => {
@@ -33,8 +34,8 @@ describe('checkStatus', () => {
     const res = { status: 100 }
     try {
       checkStatus(res as any)
-      fail()
-    } catch (e) {
+      expect.unreachable()
+    } catch (e: any) {
       expect(e).toBeInstanceOf(Error)
       expect(e.res).toBe(res)
     }

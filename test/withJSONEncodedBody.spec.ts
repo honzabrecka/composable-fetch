@@ -1,6 +1,7 @@
-import { withJSONEncodedBody } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { withJSONEncodedBody } from '../src/index.ts'
 
-describe('withEncodedBody', () => {
+describe('withJSONEncodedBody', () => {
   it('does nothing when body is empty', () => {
     const req = {
       headers: {},

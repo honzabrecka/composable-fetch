@@ -1,4 +1,5 @@
-import { withBaseUrl } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { withBaseUrl } from '../src/index.ts'
 
 describe('withBaseUrl', () => {
   it('prepends baseUrl before req.url', () => {

@@ -1,5 +1,6 @@
 import { forAll, generators } from 'rapid-check'
-import { delay, pipeP } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { delay, pipeP } from '../src/index.ts'
 
 describe('pipeP', () => {
   it('pipeP', async () => {
@@ -35,13 +36,10 @@ describe('pipeP', () => {
   }, 25000)
 
   it('fails the pipe when any function fails', async () => {
-    try {
-      await pipeP(() => {
+    await expect(
+      pipeP(() => {
         throw new Error('Fail')
-      })('whatever')
-    } catch (e) {
-      expect(e).toBeInstanceOf(Error)
-      expect(e.message).toBe('Fail')
-    }
+      })('whatever'),
+    ).rejects.toThrow('Fail')
   })
 })

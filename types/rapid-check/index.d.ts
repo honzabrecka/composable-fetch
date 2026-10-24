@@ -1,4 +1,4 @@
-declare module 'rapid-check';
+declare module 'rapid-check'
 
 // declare module 'rapid-check' {
 //   export type RNG = (min: number, max: number) => number

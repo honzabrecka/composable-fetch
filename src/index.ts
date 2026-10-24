@@ -115,7 +115,7 @@ export function pipeP<
   T11,
   T12,
   T13,
-  T14
+  T14,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -146,7 +146,7 @@ export function pipeP<
   T12,
   T13,
   T14,
-  T15
+  T15,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -179,7 +179,7 @@ export function pipeP<
   T13,
   T14,
   T15,
-  T16
+  T16,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -214,7 +214,7 @@ export function pipeP<
   T14,
   T15,
   T16,
-  T17
+  T17,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -251,7 +251,7 @@ export function pipeP<
   T15,
   T16,
   T17,
-  T18
+  T18,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -290,7 +290,7 @@ export function pipeP<
   T16,
   T17,
   T18,
-  T19
+  T19,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -331,7 +331,7 @@ export function pipeP<
   T17,
   T18,
   T19,
-  T20
+  T20,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -374,7 +374,7 @@ export function pipeP<
   T18,
   T19,
   T20,
-  T21
+  T21,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -419,7 +419,7 @@ export function pipeP<
   T19,
   T20,
   T21,
-  T22
+  T22,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -466,7 +466,7 @@ export function pipeP<
   T20,
   T21,
   T22,
-  T23
+  T23,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -515,7 +515,7 @@ export function pipeP<
   T21,
   T22,
   T23,
-  T24
+  T24,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -566,7 +566,7 @@ export function pipeP<
   T22,
   T23,
   T24,
-  T25
+  T25,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -619,7 +619,7 @@ export function pipeP<
   T23,
   T24,
   T25,
-  T26
+  T26,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -674,7 +674,7 @@ export function pipeP<
   T24,
   T25,
   T26,
-  T27
+  T27,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -731,7 +731,7 @@ export function pipeP<
   T25,
   T26,
   T27,
-  T28
+  T28,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -790,7 +790,7 @@ export function pipeP<
   T26,
   T27,
   T28,
-  T29
+  T29,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -851,7 +851,7 @@ export function pipeP<
   T27,
   T28,
   T29,
-  T30
+  T30,
 >(
   f1: (v: T1) => T2 | Promise<T2>,
   f2: (v: T2) => T3 | Promise<T3>,
@@ -890,32 +890,45 @@ export function pipeP(...fns: Function[]) {
         try {
           if (f === undefined) resolve(value)
           else run(fns, await f(value))
-        } catch (e) {
-          reject(e)
+        } catch (error) {
+          reject(error)
         }
       })(fns, value)
     })
 }
 
-export const tryCatchP = <A, B>(
-  trier: (value: A) => Promise<B>,
-  catcher: (err: Error, value: A) => Promise<B>,
-) => async (value: A) => {
-  try {
-    return await trier(value)
-  } catch (err) {
-    return await catcher(err, value)
+export const tryCatchP =
+  <A, B>(
+    trier: (value: A) => Promise<B>,
+    catcher: (err: any, value: A) => Promise<B>,
+  ) =>
+  async (value: A): Promise<B> => {
+    try {
+      return await trier(value)
+    } catch (error) {
+      return await catcher(error, value)
+    }
   }
-}
 
-const newError = (id: string, message: string, res?: Response) => {
+const newError = (
+  id: string,
+  message: string,
+  req?: Request,
+  res?: Response,
+) => {
   const error = new Error(message)
   ;(error as any).id = id
+  if (req) (error as any).req = req
   if (res) (error as any).res = res
   return error
 }
 
-export const errorIds = {
+export const errorIds: {
+  RetryError: string
+  TimeoutError: string
+  DecodeResponseError: string
+  InvalidStatusCodeError: string
+} = {
   RetryError: 'RetryError',
   TimeoutError: 'TimeoutError',
   DecodeResponseError: 'DecodeResponseError',
@@ -924,8 +937,8 @@ export const errorIds = {
 
 export type Delay = (t: number) => Promise<void>
 
-export const delay: Delay = time =>
-  new Promise(resolve => {
+export const delay: Delay = (time) =>
+  new Promise((resolve) => {
     setTimeout(() => resolve(), time)
   })
 
@@ -934,179 +947,256 @@ const delayedFail = (timeout: number) =>
     throw newError(errorIds.TimeoutError, 'Timeout')
   })
 
-const tapAndDelay = (f: Function, time: number) => {
+export type Tap = (time: number) => unknown
+
+const tapAndDelay = (f: Tap, time: number): Promise<void> => {
   f(time)
   return delay(time)
 }
 
-const nothing = (): any => undefined
+const nothing: Tap = () => undefined
 
-export const delays = {
+export const delays: {
+  delay: Delay
+  tapAndDelay: typeof tapAndDelay
+  constant: (time?: number, f?: Tap) => Delay
+  exponential: (time?: number, f?: Tap) => Delay
+  quadratic: (time?: number, f?: Tap) => Delay
+  limited: (max: number, delay: Delay) => Delay
+  linear: (time?: number, f?: Tap) => Delay
+} = {
   delay,
   tapAndDelay,
-  constant: (time = 1000, f = nothing): Delay => () => tapAndDelay(f, time),
-  exponential: (time = 1000, f = nothing): Delay => i =>
-    tapAndDelay(f, i * i * time),
-  limited: (max: number, delay: Delay): Delay => i =>
-    delay(((i - 1) % max) + 1),
-  linear: (time = 1000, f = nothing): Delay => i => tapAndDelay(f, i * time),
+  constant:
+    (time = 1000, f = nothing): Delay =>
+    () =>
+      tapAndDelay(f, time),
+  exponential:
+    (time = 1000, f = nothing): Delay =>
+    (i) =>
+      tapAndDelay(f, 2 ** (i - 1) * time),
+  quadratic:
+    (time = 1000, f = nothing): Delay =>
+    (i) =>
+      tapAndDelay(f, i * i * time),
+  limited:
+    (max: number, delay: Delay): Delay =>
+    (i) =>
+      delay(((i - 1) % max) + 1),
+  linear:
+    (time = 1000, f = nothing): Delay =>
+    (i) =>
+      tapAndDelay(f, i * time),
 }
 
 export interface Request extends RequestInit {
   url: string
 }
 
-export const withBaseUrl = (baseUrl: string) => (req: Request) => {
-  req.url = baseUrl + req.url
-  return req
+export const copyHeaders = (headers?: HeadersInit): HeadersInit | undefined => {
+  if (headers instanceof Headers) return new Headers(headers)
+  if (Array.isArray(headers))
+    return headers.map(([name, value]): [string, string] => [name, value])
+  return headers && { ...headers }
 }
 
-export const withHeader = (header: string, value: string) => (req: Request) => {
-  if (req.headers && req.headers instanceof Headers)
-    if (req.headers.has(header)) req.headers.append(header, value)
-    else req.headers.set(header, value)
-  else {
-    // Hack for backward compatibility
-    ;(req.headers as any) = req.headers || {}
-    ;(req.headers as any)[header.toLowerCase()] = value
+// Request enhancers never mutate passed request, so it can be reused
+export const copyRequest = (
+  req: Request,
+  patch: Partial<Request> = {},
+): Request => ({
+  ...req,
+  headers: copyHeaders(req.headers),
+  ...patch,
+})
+
+export const withBaseUrl =
+  (baseUrl: string) =>
+  (req: Request): Request =>
+    copyRequest(req, { url: baseUrl + req.url })
+
+export const withHeader =
+  (header: string, value: string) =>
+  (req: Request): Request => {
+    const copy = copyRequest(req)
+    const name = header.toLowerCase()
+    if (copy.headers instanceof Headers) copy.headers.set(header, value)
+    else if (Array.isArray(copy.headers)) {
+      copy.headers = copy.headers.filter(([key]) => key.toLowerCase() !== name)
+      copy.headers.push([header, value])
+    } else {
+      // Hack for backward compatibility
+      const headers: Record<string, string> = copy.headers || {}
+      for (const key of Object.keys(headers))
+        if (key.toLowerCase() === name) delete headers[key]
+      headers[name] = value
+      copy.headers = headers
+    }
+
+    return copy
   }
 
-  return req
-}
-
-export const withCredentials = (value: RequestCredentials) => (
-  req: Request,
-) => {
-  req.credentials = value
-  return req
-}
+export const withCredentials =
+  (value: RequestCredentials) =>
+  (req: Request): Request =>
+    copyRequest(req, { credentials: value })
 
 export type Encoder<A, B> = (v: A) => B
 
-export const withEncodedBody = <A, B>(encoder: Encoder<A, B>) => (
-  req: Request,
-) => {
-  if (req.method && req.method.toLowerCase() !== 'get' && req.body)
-    req.body = encoder(req.body as any) as any
-  return req
-}
+export const withEncodedBody =
+  <A, B>(encoder: Encoder<A, B>) =>
+  (req: Request): Request => {
+    if (req.method && req.method.toLowerCase() !== 'get' && req.body != null)
+      return copyRequest(req, { body: encoder(req.body as any) as any })
+    return req
+  }
 
-export const withJSONEncodedBody = withEncodedBody<any, string>(JSON.stringify)
+export const withJSONEncodedBody: (req: Request) => Request = withEncodedBody<
+  any,
+  string
+>(JSON.stringify)
 
 export type UnaryFetch = (req: Request) => Promise<Response>
 
 export type BinaryFetch = (url: string, init: Request) => Promise<Response>
 
-export const fetch1 = (fetch: BinaryFetch): UnaryFetch => (req: Request) =>
-  fetch(req.url, req)
+export const fetch1 =
+  (fetch: BinaryFetch): UnaryFetch =>
+  (req: Request) =>
+    fetch(req.url, req)
 
 export type RetryableFetch = () => Promise<Response>
 
-export const retryable = (fetch: UnaryFetch) => (
-  req: Request,
-): RetryableFetch => async () => {
-  const retryableErrors = new Set([
-    'ETIMEDOUT', // One of the timeout limits were reached.
-    'ECONNRESET', // Connection was forcibly closed by a peer.
-    'EADDRINUSE', // Could not bind to any free port.
-    'ECONNREFUSED', // Connection was refused by the server.
-    'EPIPE', // The remote side of the stream being written has been closed.
-    'ENOTFOUND', // Couldn't resolve the hostname to an IP address.
-    'ENETUNREACH', // No internet connection.
-    'EAI_AGAIN', // DNS lookup timed out.
-  ])
-  const retryableStatuses = new Set([408, 413, 429, 500, 502, 503, 504])
-  const throwError = (res?: Response) => {
-    throw newError(errorIds.RetryError, 'Retry error', res)
-  }
-
-  try {
-    const res = await fetch(req)
-    if (retryableStatuses.has(res.status)) throwError(res)
-    return res
-  } catch (error) {
-    if (retryableErrors.has((error as any).code)) throwError()
-    throw error
-  }
+const throwError = (req: Request, res?: Response) => {
+  throw newError(errorIds.RetryError, 'Retry error', req, res)
 }
+
+const retryableErrors = new Set([
+  'ETIMEDOUT', // One of the timeout limits were reached.
+  'ECONNRESET', // Connection was forcibly closed by a peer.
+  'EADDRINUSE', // Could not bind to any free port.
+  'ECONNREFUSED', // Connection was refused by the server.
+  'EPIPE', // The remote side of the stream being written has been closed.
+  'ENOTFOUND', // Couldn't resolve the hostname to an IP address.
+  'ENETUNREACH', // No internet connection.
+  'EAI_AGAIN', // DNS lookup timed out.
+  'UND_ERR_CONNECT_TIMEOUT', // undici: connecting to the server timed out.
+  'UND_ERR_SOCKET', // undici: socket failed, e.g. closed by the server.
+])
+const retryableStatuses = new Set([408, 413, 429, 500, 502, 503, 504])
+
+// Node's built-in fetch (undici) wraps the system error into error.cause
+const errorCode = (error: any) => error?.code ?? error?.cause?.code
+
+export const retryable =
+  (fetch: UnaryFetch): ((req: Request) => RetryableFetch) =>
+  (req: Request): RetryableFetch =>
+  async () => {
+    try {
+      const res = await fetch(req)
+      if (retryableStatuses.has(res.status)) throwError(req, res)
+      return res
+    } catch (error) {
+      if (retryableErrors.has(errorCode(error))) throwError(req)
+      throw error
+    }
+  }
 
 /**
  * @deprecated 6.0.0
  */
-export const withTimeout = (timeout: number) => (
-  fetch: RetryableFetch,
-): RetryableFetch => () => Promise.race([fetch(), delayedFail(timeout)])
+export const withTimeout =
+  (timeout: number): ((fetch: RetryableFetch) => RetryableFetch) =>
+  (fetch: RetryableFetch): RetryableFetch =>
+  () =>
+    Promise.race([fetch(), delayedFail(timeout)])
 
 export const decodeRetryAfterHeaderValue = (
   response?: Response,
-): number | void => {
-  const value = response && response.headers.get('retry-after')
-  if (typeof value === 'string') {
-    // node-fetch workaround
-    // it converts number to string
-    const parsed = parseInt(value, 10)
-    if (`${parsed}` === value) return parsed
-    return new Date(value).getTime() - Date.now()
-  }
-  if (typeof value === 'number') return value
-  return undefined
+): number | undefined => {
+  const value = response?.headers.get('retry-after')
+  if (typeof value !== 'string') return undefined
+  const trimmed = value.trim()
+  // delta-seconds
+  if (/^\d+$/.test(trimmed)) return parseInt(trimmed, 10) * 1000
+  const ms = parseHttpDate(trimmed) - Date.now()
+  return Number.isNaN(ms) ? undefined : Math.max(0, ms)
+}
+
+// IMF-fixdate: Sun, 06 Nov 1994 08:49:37 GMT
+const imfFixdate =
+  /^[A-Z][a-z]{2}, \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT$/
+// obsolete RFC 850: Sunday, 06-Nov-94 08:49:37 GMT
+const rfc850Date =
+  /^[A-Z][a-z]+, \d{2}-[A-Z][a-z]{2}-\d{2} \d{2}:\d{2}:\d{2} GMT$/
+// obsolete asctime: Sun Nov  6 08:49:37 1994 (implicitly GMT)
+const asctimeDate =
+  /^[A-Z][a-z]{2} [A-Z][a-z]{2} [ \d]\d \d{2}:\d{2}:\d{2} \d{4}$/
+
+const parseHttpDate = (value: string): number => {
+  if (imfFixdate.test(value) || rfc850Date.test(value)) return Date.parse(value)
+  if (asctimeDate.test(value)) return Date.parse(`${value} GMT`)
+  return Number.NaN
 }
 
 export interface RetryOptions {
+  /** Number of retries, so up to max + 1 requests are made. */
   max?: number
   delay?: Delay
   maxTimeout?: number
+  /** Return false to not retry the request, e.g. a non-idempotent one. */
+  filter?: (req?: Request) => boolean
 }
 
-export const withRetry = ({
-  max = 5,
-  delay = delays.linear(),
-  maxTimeout = Number.MAX_VALUE,
-}: RetryOptions = {}) => (fetch: RetryableFetch): Promise<Response> => {
-  return new Promise((resolve, reject) => {
-    ;(async function run(i: number) {
-      if (i === max + 1) reject(newError(errorIds.RetryError, 'Retry failed'))
-      else
-        try {
-          resolve(await fetch())
-        } catch (error) {
-          if (error.id !== errorIds.RetryError) {
-            reject(error)
-            return
-          }
-          const retryAfter = decodeRetryAfterHeaderValue(error.res)
-          if (retryAfter > maxTimeout) {
-            reject(
-              newError(
-                errorIds.RetryError,
-                'Retry-after is higher than maxTimeout',
-              ),
-            )
-            return
-          }
-          await (retryAfter === undefined ? delay(i) : delays.delay(retryAfter))
-          run(i + 1)
-        }
-    })(1)
-  })
-}
+const always = () => true
 
-export const withSafe204 = (text: string = '', json: any = {}) => (
-  res: Response,
-) => {
-  if (res.status === 204) {
-    res.text = async () => text
-    res.json = async () => json
+export const withRetry =
+  ({
+    max = 5,
+    delay = delays.linear(),
+    maxTimeout = Number.MAX_VALUE,
+    filter = always,
+  }: RetryOptions = {}): ((fetch: RetryableFetch) => Promise<Response>) =>
+  async (fetch: RetryableFetch): Promise<Response> => {
+    const errors: any[] = []
+    const retryFailed = (message: string, last: any) => {
+      const error = newError(errorIds.RetryError, message, last.req, last.res)
+      ;(error as any).errors = errors
+      return error
+    }
+
+    for (let i = 1; ; i++) {
+      try {
+        return await fetch()
+      } catch (error) {
+        if ((error as any).id !== errorIds.RetryError) throw error
+        if (!filter((error as any).req)) throw error
+        errors.push(error)
+        if (i > max) throw retryFailed('Retry failed', error)
+        const retryAfter = decodeRetryAfterHeaderValue((error as any).res)
+        if (retryAfter !== undefined && retryAfter > maxTimeout)
+          throw retryFailed('Retry-after is higher than maxTimeout', error)
+        await (retryAfter === undefined ? delay(i) : delays.delay(retryAfter))
+      }
+    }
   }
-  return res
-}
 
-export const withClone = (res: Response) => {
+export const withSafe204 =
+  (text: string = '', json: any = {}) =>
+  (res: Response): Response => {
+    if (res.status === 204) {
+      res.text = async () => text
+      res.json = async () => json
+    }
+    return res
+  }
+
+export const withClone = (res: Response): Response => {
   ;(res as any).cloned = res.clone()
   return res
 }
 
-export const decodeResponse = (res: Response) => {
+export const decodeResponse = (res: Response): Promise<Response> | Response => {
   const contentType = res.headers.get('content-type') || ''
   if (contentType.indexOf('application/json') === 0)
     return decodeJSONResponse(res)
@@ -1116,60 +1206,77 @@ export const decodeResponse = (res: Response) => {
   return res
 }
 
-export const decodeTextResponse = async (res: Response) => {
+export const decodeTextResponse = async (res: Response): Promise<Response> => {
   ;(res as any).data = await res.text()
   return res
 }
 
-export const decodeJSONResponse = async (res: Response) => {
+export const decodeJSONResponse = async (res: Response): Promise<Response> => {
   try {
     ;(res as any).data = await res.json()
     return res
-  } catch (e) {
-    throw newError(errorIds.DecodeResponseError, e.message, res)
+  } catch (error) {
+    throw newError(
+      errorIds.DecodeResponseError,
+      (error as any).message,
+      undefined,
+      res,
+    )
   }
 }
 
-export const decodeFormDataResponse = async (res: Response) => {
+export const decodeFormDataResponse = async (
+  res: Response,
+): Promise<Response> => {
   try {
     ;(res as any).data = await res.formData()
     return res
-  } catch (e) {
-    throw newError(errorIds.DecodeResponseError, e.message, res)
+  } catch (error) {
+    throw newError(
+      errorIds.DecodeResponseError,
+      (error as any).message,
+      undefined,
+      res,
+    )
   }
 }
 
-export const decodeArrayBufferResponse = async (res: Response) => {
+export const decodeArrayBufferResponse = async (
+  res: Response,
+): Promise<Response> => {
   ;(res as any).data = await res.arrayBuffer()
   return res
 }
 
-export const decodeBlobResponse = async (res: Response) => {
+export const decodeBlobResponse = async (res: Response): Promise<Response> => {
   ;(res as any).data = await res.blob()
   return res
 }
 
-export const checkStatus = (res: Response) => {
+export const checkStatus = (res: Response): Response => {
   if (res.status < 200 || res.status >= 400)
     throw newError(
       errorIds.InvalidStatusCodeError,
-      'Invalid status code: ' + res.status,
+      `Invalid status code: ${res.status}`,
+      undefined,
       res,
     )
   return res
 }
 
-const formatError = async (error: Error, x: string = 'Fetch error') => {
+const formatError = async (error: any, prefix: string = 'Fetch error') => {
   let formatted = ''
   const append = (line: string, empty: boolean = false) => {
     const n = empty ? '\n' : ''
-    formatted += n + line + '\n' + n
+    formatted += `${n + line}\n${n}`
   }
-  const { message, id, errors, res } = error as any
+  const { message, id, errors, req, res } = error
 
-  append(x + (id ? ` [${id}]: ` : ': ') + message)
+  append(prefix + (id ? ` [${id}]: ` : ': ') + message)
+  if (req) append(`url: ${req.url}`)
 
-  if (id === errorIds.RetryError) {
+  // RetryError thrown by retryable itself (e.g. without withRetry) has no errors
+  if (id === errorIds.RetryError && errors) {
     const awaitingErrors = errors.map((error: any, i: number) =>
       formatError(error, `retry: [${i}]`),
     )
@@ -1179,7 +1286,11 @@ const formatError = async (error: Error, x: string = 'Fetch error') => {
     id === errorIds.DecodeResponseError ||
     id === errorIds.InvalidStatusCodeError
   )
-    if (res.data) append(res.data, true)
+    if (res.data)
+      append(
+        typeof res.data === 'string' ? res.data : JSON.stringify(res.data),
+        true,
+      )
     else if (res.cloned) append(await res.cloned.text(), true)
 
   return formatted
@@ -1187,14 +1298,27 @@ const formatError = async (error: Error, x: string = 'Fetch error') => {
 
 export type Log = (message: string) => any
 
-export const logError = (log: Log = console.error.bind(console)) => async (
-  error: Error,
-) => {
-  log(await formatError(error))
-  throw error
-}
+export const logError =
+  (log: Log = console.error.bind(console)) =>
+  async (error: Error): Promise<never> => {
+    log(await formatError(error))
+    throw error
+  }
 
-export const json = (fetch: BinaryFetch, options?: RetryOptions) =>
+// Undecodable body of a response with invalid status (e.g. HTML 404 page)
+// is reported as InvalidStatusCodeError, not as DecodeResponseError.
+const decodeJSONResponseOrCheckStatus = tryCatchP(
+  decodeJSONResponse,
+  async (error, res: Response) => {
+    checkStatus(res)
+    throw error
+  },
+)
+
+export const json = (
+  fetch: BinaryFetch,
+  options?: RetryOptions,
+): ((v: Request) => Promise<Response>) =>
   pipeP(
     withHeader('Content-Type', 'application/json'),
     withHeader('Accept', 'application/json'),
@@ -1202,11 +1326,14 @@ export const json = (fetch: BinaryFetch, options?: RetryOptions) =>
     retryable(fetch1(fetch)),
     withRetry(options),
     withSafe204(),
-    decodeJSONResponse,
+    decodeJSONResponseOrCheckStatus,
     checkStatus,
   )
 
-export const text = (fetch: BinaryFetch, options?: RetryOptions) =>
+export const text = (
+  fetch: BinaryFetch,
+  options?: RetryOptions,
+): ((v: Request) => Promise<Response>) =>
   pipeP(
     retryable(fetch1(fetch)),
     withRetry(options),
@@ -1215,7 +1342,10 @@ export const text = (fetch: BinaryFetch, options?: RetryOptions) =>
     checkStatus,
   )
 
-export const abortable = () => {
+export const abortable = (): {
+  signal: AbortSignal
+  abort: () => void
+} => {
   const controller = new AbortController()
   const { signal } = controller
   return {
@@ -1226,9 +1356,9 @@ export const abortable = () => {
   }
 }
 
-export const ignoreAbortError = <T>(handler: (error: Error) => T) => (
-  error: Error,
-): T | void => {
-  if (error.name === 'AbortError') return
-  return handler(error)
-}
+export const ignoreAbortError =
+  <T>(handler: (error: Error) => T) =>
+  (error: Error): T | undefined => {
+    if (error.name === 'AbortError') return
+    return handler(error)
+  }

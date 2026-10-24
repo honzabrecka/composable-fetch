@@ -1,11 +1,10 @@
-# composable-fetch [![CircleCI](https://circleci.com/gh/honzabrecka/composable-fetch/tree/master.svg?style=svg&circle-token=eefe6811545741764260a25f382c13da0d6e31a7)](https://circleci.com/gh/honzabrecka/composable-fetch/tree/master)
+# composable-fetch
 
- - Composable and extensible
- - Just javascript and promises
- - Brings solutions for most common cases such as status code checking, body encoding/decoding, retries & retries strategies, ...
- - Provides functional API
- - Dependency free
- - First class support for both TypeScript and Flow
+- Composable and extensible
+- Just javascript and promises
+- Brings solutions for most common cases such as status code checking, body encoding/decoding, retries & retries strategies, ...
+- Provides functional API
+- Dependency free
 
 ## Installation
 
@@ -16,7 +15,7 @@ npm install composable-fetch
 ## Example
 
 ```js
-const composableFetch = require('composable-fetch')
+import * as composableFetch from 'composable-fetch'
 
 const log = console.log.bind(console)
 
@@ -29,21 +28,35 @@ const fetchJSON = composableFetch.pipeP(
   composableFetch.withRetry(),
   composableFetch.withSafe204(),
   composableFetch.decodeJSONResponse,
-  composableFetch.checkStatus
+  composableFetch.checkStatus,
 )
 
 fetchJSON({ url: '/foo' }).then(log).catch(log)
-fetchJSON({ url: '/bar', method: 'POST', body: [1, 2, 3] }).then(log).catch(log)
+fetchJSON({ url: '/bar', method: 'POST', body: [1, 2, 3] })
+  .then(log)
+  .catch(log)
 ```
 
-For better overview of how composability may help take a look at `examples/composable.js` example.
+For better overview of how composability may help take a look at [`examples/composable.ts`](examples/composable.ts).
+
+## Development
+
+```
+npm install
+npm test           # run tests (vitest)
+npm run typecheck  # type check (tsc)
+npm run lint       # lint & format check (biome)
+npm run build      # build dist (tsdown)
+npm run example    # list examples
+npm run example abort
+```
 
 ## Overview
 
 The main concept of composable-fetch is [piping (left-to-right composition)](#pipep) - passing data through pipe of unary functions. Pipe typically has three blocks, subpipes ([see API](#api) for more details about applicable functions):
 
 ```
-pipe = enhance request -> fetch (with retries) -> enhance response
+pipe = enhance request -> fetch (with retries) -> enhance response
 ```
 
 ## fetch
@@ -51,6 +64,8 @@ pipe = enhance request -> fetch (with retries) -> enhance response
 For better composability, composable-fetch requires unary `fetch`. However original `fetch` function or its polyfills is of binary arity. Don't worry, composable-fetch comes with `fetch1` wrapper that transforms unary interface to its binary counterpart.
 
 ## Retries
+
+`max` is the number of retries, so `max: 3` makes at most 4 requests (default `max` is 5). `max: 0` disables retries.
 
 ```js
 withRetry({ max: 3, delay: delays.constant() })
@@ -60,10 +75,25 @@ withRetry({ max: 3, delay: delays.linear() })
 // retries after 1 sec, then after 2 secs, then after 3 secs
 
 withRetry({ max: 3, delay: delays.exponential() })
+// retries after 1 sec, then after 2 secs, then after 4 secs
+
+withRetry({ max: 3, delay: delays.quadratic() })
 // retries after 1 sec, then after 4 secs, then after 9 secs
 
 withRetry({ max: 6, delay: delays.limited(3, delays.linear()) })
 // retries after 1 sec, then 2 secs, 3 secs, then 1 sec, 2 secs, 3 secs
+```
+
+When the response contains a `Retry-After` header, its value is used instead of `delay`. If it is higher than `maxTimeout`, `withRetry` gives up.
+
+By default every request is retried. Use `filter` to retry only some of them, e.g. only idempotent ones, so that a `POST` is not sent twice:
+
+```js
+const idempotent = new Set(['GET', 'HEAD', 'OPTIONS', 'PUT', 'DELETE'])
+
+withRetry({
+  filter: (req) => idempotent.has((req?.method ?? 'GET').toUpperCase()),
+})
 ```
 
 When using `withRetry`, make sure that you wrapped `fetch` with `retryable`.
@@ -73,7 +103,7 @@ When using `withRetry`, make sure that you wrapped `fetch` with `retryable`.
 To pretty print failed request (any reason):
 
 ```js
-const fetchJSON: tryCatchP(
+const fetchJSON = tryCatchP(
   pipeP(/* ... */),
   logError(), // to console.error by default
 )
@@ -82,7 +112,7 @@ const fetchJSON: tryCatchP(
 In case you are interested in details of all requests made by your application, you can add simple `tap` function which performs desired side effect:
 
 ```js
-const tap = (f) => (v) => {
+const tap = (f) => (v) => {
   f(v)
   return v
 }
@@ -108,7 +138,7 @@ const fetchJSON = tryCatchP(
     decodeJSONResponse, // this will fail for any non application/json response
     // ...
   ),
-  logError
+  logError(),
 )
 ```
 
@@ -130,8 +160,18 @@ withEncodedBody: <A, B>(encoder: Encoder<A, B>) => (req: Request) => Request
 withJSONEncodedBody: (req: Request) => Request
 withHeader: (header: string, value: string) => (req: Request) => Request
 withCredentials: (value: 'omit' | 'same-origin' | 'include') => (req: Request) => Request
-withTimeout: (timeout: number) => (fetch: RetryableFetch) => RetryableFetch
 ```
+
+Request enhancers never mutate the passed request, so it's safe to reuse it. They return a copy made by `copyRequest`, which can be used in custom enhancers as well:
+
+```js
+copyRequest: (req: Request, patch?: Partial<Request>) => Request // { ...req, headers: copyHeaders(req.headers), ...patch }
+copyHeaders: (headers?: HeadersInit) => HeadersInit | undefined
+
+const withMethod = (method) => (req) => copyRequest(req, { method })
+```
+
+`withHeader` sets the header and replaces any existing value with the same (case-insensitive) name. `req.headers` may be a plain object, an array of `[name, value]` tuples or a `Headers` instance.
 
 ### Fetch phase
 
@@ -139,18 +179,30 @@ withTimeout: (timeout: number) => (fetch: RetryableFetch) => RetryableFetch
 fetch1: (fetch: BinaryFetch) => UnaryFetch
 retryable: (fetch: UnaryFetch) => (req: Request) => RetryableFetch
 withRetry: (options?: RetryOptions) => (fetch: RetryableFetch) => Promise<Response>
+withTimeout: (timeout: number) => (fetch: RetryableFetch) => RetryableFetch // deprecated, use `signal: AbortSignal.timeout(ms)`
+
+interface RetryOptions {
+  max?: number // number of retries, default 5
+  delay?: Delay // default delays.linear()
+  maxTimeout?: number // max accepted Retry-After in ms
+  filter?: (req?: Request) => boolean // default () => true
+}
 ```
+
+`retryable` retries on statuses 408, 413, 429, 500, 502, 503, 504 and on network errors such as `ECONNRESET`, `ECONNREFUSED`, `ENOTFOUND` (including errors of Node's built-in `fetch`, where the code is in `error.cause.code`).
 
 ### Enhance response phase
 
+Decoders store the decoded body in `res.data` and return the same `res`.
+
 ```js
 checkStatus: (res: Response) => Response
-decodeArrayBufferResponse: (res: Response) => DecodedResponse
-decodeBlobResponse: (res: Response) => DecodedResponse
-decodeFormDataResponse: (res: Response) => DecodedResponse
-decodeJSONResponse: (res: Response) => DecodedResponse
-decodeResponse: (res: Response) => DecodedResponse
-decodeTextResponse: (res: Response) => DecodedResponse
+decodeArrayBufferResponse: (res: Response) => Promise<Response>
+decodeBlobResponse: (res: Response) => Promise<Response>
+decodeFormDataResponse: (res: Response) => Promise<Response>
+decodeJSONResponse: (res: Response) => Promise<Response>
+decodeResponse: (res: Response) => Response | Promise<Response>
+decodeTextResponse: (res: Response) => Promise<Response>
 withSafe204: (text?: string, json?: any) => (res: Response) => Response
 withClone: (res: Response) => Response
 ```
@@ -158,15 +210,17 @@ withClone: (res: Response) => Response
 ### Predefined pipes
 
 ```js
-json: (fetch: BinaryFetch, options?: RetryOptions) => Promise<DecodedResponse>
-text: (fetch: BinaryFetch, options?: RetryOptions) => Promise<DecodedResponse>
+json: (fetch: BinaryFetch, options?: RetryOptions) => (req: Request) => Promise<Response>
+text: (fetch: BinaryFetch, options?: RetryOptions) => (req: Request) => Promise<Response>
 ```
+
+A response with invalid status code always fails with `InvalidStatusCodeError`, also when its body can't be decoded (e.g. HTML 404 page returned to `json`).
 
 ### Abort
 
-For better understanding how to abort fetch request, go to `examples/abort.js` example.
+For better understanding how to abort fetch request, go to [`examples/abort.ts`](examples/abort.ts) example.
 
 ```js
-abortable: () => { signal: AbortSignal, abort: () => void }
-ignoreAbortError: <T>(handler: (error: Error) => T) => (error: Error) => T
+abortable: () => { signal: AbortSignal, abort: () => void }
+ignoreAbortError: <T>(handler: (error: Error) => T) => (error: Error) => T
 ```

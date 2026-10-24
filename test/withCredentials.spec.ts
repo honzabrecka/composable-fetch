@@ -1,4 +1,5 @@
-import { withCredentials } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { withCredentials } from '../src/index.ts'
 
 describe('withCredentials', () => {
   it('assocs credentials property', () => {

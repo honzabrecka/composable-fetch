@@ -1,4 +1,5 @@
-import { fetch1 } from '../src/index'
+import { expect, it, vi } from 'vitest'
+import { fetch1 } from '../src/index.ts'
 
 it('fetch1', () => {
   const req = {
@@ -7,7 +8,7 @@ it('fetch1', () => {
     method: 'post',
     url: 'foo',
   }
-  const fetch = jest.fn()
+  const fetch = vi.fn()
   fetch1(fetch)(req)
   expect(fetch).toBeCalledWith('foo', {
     body: 'bar',

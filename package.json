@@ -1,44 +1,49 @@
 {
   "name": "composable-fetch",
-  "version": "7.0.1",
+  "version": "8.0.0",
   "repository": {
     "type": "git",
-    "url": "git@github.com:honzabrecka/composable-fetch.git"
+    "url": "git+ssh://git@github.com/honzabrecka/composable-fetch.git"
   },
   "author": "jan.brecka@gmail.com",
   "license": "MIT",
-  "main": "dist/index.js",
-  "module": "dist/composable-fetch-next.esm.js",
-  "typings": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.cts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
   "files": [
     "dist"
   ],
-  "scripts": {
-    "build": "tsdx build && yarn flow:copy",
-    "test": "tsdx test",
-    "flow:copy": "cp index.js.flow dist",
-    "tslint": "tslint -c tslint.json '{src/**/*.ts,test/**/*.ts}' -t verbose"
+  "sideEffects": false,
+  "engines": {
+    "node": ">=22"
   },
-  "peerDependencies": {},
-  "prettier": {
-    "printWidth": 80,
-    "semi": false,
-    "singleQuote": true,
-    "trailingComma": "all"
+  "scripts": {
+    "build": "tsdown",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc",
+    "lint": "biome check",
+    "format": "biome check --write",
+    "example": "node examples/run.ts",
+    "prepublishOnly": "npm run build"
   },
   "devDependencies": {
-    "@types/jest": "^26.0.15",
-    "@types/node-fetch": "^2.5.7",
-    "flow-bin": "^0.137.0",
-    "node-fetch": "^2.6.1",
-    "prettier": "^2.1.2",
+    "@arethetypeswrong/core": "^0.18.5",
+    "@biomejs/biome": "^2.6.2",
+    "@types/node": "^26.6.5",
+    "publint": "^0.3.25",
     "rapid-check": "^0.3.0",
-    "transit-js": "^0.8.867",
-    "tsdx": "^0.14.1",
-    "tslib": "^1.10.0",
-    "tslint": "^5.20.1",
-    "tslint-config-prettier": "^1.18.0",
-    "typescript": "^4.0.5"
-  },
-  "dependencies": {}
+    "transit-js": "^0.8.874",
+    "tsdown": "^0.23.2",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.5"
+  }
 }

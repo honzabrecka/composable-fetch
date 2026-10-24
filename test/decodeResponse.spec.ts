@@ -1,4 +1,5 @@
-import { decodeResponse } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { decodeResponse } from '../src/index.ts'
 
 interface Dict<T> {
   [key: string]: T
@@ -33,7 +34,7 @@ describe('decodeResponse', () => {
     expect((decodedRes as any).data).toBe('foo')
   })
 
-  it('decodes json response when content-type starts with application/json', async () => {
+  it('decodes json response when content-type starts with application/json and has parameters', async () => {
     const res = {
       headers: new Headers({ 'content-type': 'application/json; transit' }),
       json: () => Promise.resolve('foo'),

@@ -1,9 +1,10 @@
-import { withClone } from '../src/index'
+import { describe, expect, it, vi } from 'vitest'
+import { withClone } from '../src/index.ts'
 
 describe('withClone', () => {
   it('clones itself', () => {
     const res: any = {
-      clone: jest.fn(),
+      clone: vi.fn(),
     }
     withClone(res)
     expect(res).toHaveProperty('cloned')

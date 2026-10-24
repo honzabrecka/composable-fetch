@@ -1,4 +1,5 @@
-import { decodeBlobResponse } from '../src/index'
+import { describe, expect, it } from 'vitest'
+import { decodeBlobResponse } from '../src/index.ts'
 
 describe('decodeBlobResponse', () => {
   it('decodes blob response', async () => {
